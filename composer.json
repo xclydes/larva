@@ -1,0 +1,23 @@
+{
+    "name": "xclydes/larva",
+    "description": "A library to aid in the quickly developing CRUD functionality within a Larvel 5 applicaiton.",
+    "require": {
+        "php": ">=5.5.0".
+        "kris/laravel-form-builder": "^1.6",
+        "doctrine/dbal": "^2.5"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jermaine Rattray",
+            "email": "xclydes@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Xclydes\\Larva": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
