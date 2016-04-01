@@ -2,7 +2,7 @@
     "name": "xclydes/larva",
     "description": "A library to aid in the quickly developing CRUD functionality within a Larvel 5 applicaiton.",
     "require": {
-        "php": ">=5.5.0".
+        "php": ">=5.5.0",
         "kris/laravel-form-builder": "^1.6",
         "doctrine/dbal": "^2.5"
     },
