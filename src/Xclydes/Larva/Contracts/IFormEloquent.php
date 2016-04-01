@@ -1,8 +1,6 @@
 <?php
 namespace Xclydes\Larva\Contracts;
 
-use Kris\LaravelFormBuilder\Fields\FormField;
-
 interface IFormEloquent {
 	
 	const FIELD_CREATED_BY = 'created_by';

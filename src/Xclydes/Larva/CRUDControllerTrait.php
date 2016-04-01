@@ -84,7 +84,7 @@ trait  CRUDControllerTrait {
 		//Get all the entries
 		$items = $cls::all();
 		// load the view and pass the nerds
-		return View::make( "eloquent_list" )
+		return View::make( "xclydes-larva::entity_list" )
 		->with(compact('cls', 'lowerCls', 'items', 'worker', 'form', 'displayFields') );
 	}
 	
@@ -127,7 +127,7 @@ trait  CRUDControllerTrait {
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
 		// load the view and pass the nerds
-		return View::make("eloquent_crud")
+		return View::make("xclydes-larva::entity_addedit")
 		->with('instance', $instance)
 		->with('form', $this->createForm( $instance ) );
 	}
@@ -169,9 +169,11 @@ trait  CRUDControllerTrait {
 			//Return to the edit page wih the errors and inputs
 			$redir = redirect()->back()->withErrors( $form->getErrors() )->withInput();
 		} else {
+			$msgType = $instance->exists ? 'updated' : 'created';
 			//Update the instance
 			$instance->fill( Input::all() )->save();
 			//TODO Set a success flash message
+			trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.' . $msgType, ['type'=>$this->getModelClassName()]);
 			//Redirect to the listing
 			$redir = redirect()->route( strtolower( $this->getModelClassName() ) . '.index' );
 		}

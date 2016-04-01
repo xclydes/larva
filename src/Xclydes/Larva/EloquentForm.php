@@ -116,7 +116,12 @@ class EloquentForm extends Form {
 			$this->add($fieldName, $formFieldType, $options);
 		}
 		//Add the save/submit button
-		$this->add('save', 'submit', ['label' => 'Save', 'attr' => ['class' => 'btn btn-success pull-right']]);
+		$this->add('save', 'submit', [
+			'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.save'), 
+			'attr' => [
+				'class' => $this->getFormOption('btn.save.class', 'btn btn-success pull-right')
+			]				
+		]);
 	}
 	
 	/**
