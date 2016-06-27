@@ -11,6 +11,7 @@ use Doctrine\DBAL\Types\BooleanType;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Schema\Table;
 use Xclydes\Larva\Contracts\IFormEloquent;
+use Xclydes\Larva\Helpers\LarvaHelper;
 
 class EloquentForm extends Form {
 	
@@ -27,13 +28,16 @@ class EloquentForm extends Form {
 	}
 	
 	/**
+	 * Get the list of fields which should be
+	 * displatyed in the form.
 	 * @return mixed
 	 */
 	public function getDisplayedFields() {
 		$displayedColNames = array();
 		$inst = $this->getModel();
+		$isFormEloquent = $inst instanceof IFormEloquent;
 		//If the model is a form eloquent
-		if( $inst instanceof IFormEloquent ) {
+		if( $isFormEloquent ) {
 			//Ensure the build process was already run
 			foreach($this->getTableData() as $col) {
 				if( $inst->isDisplayedInForm( $col ) ) {
@@ -45,16 +49,17 @@ class EloquentForm extends Form {
 		}
 		$displayedCols = array();
 		foreach ($displayedColNames as $displayedColName) {
-			$displayedCols[$displayedColName] = ucfirst(str_replace('_', ' ', $displayedColName));
+			$displayedCols[$displayedColName] = LarvaHelper::resolveColumnName( $inst, $displayedColName );
 		}
 		return $displayedCols;
 	}
-	
+		
 	/* (non-PHPdoc)
 	 * @see \Kris\LaravelFormBuilder\Form::buildForm()
 	 */
 	public function buildForm()
 	{
+		$this->addCustomField('boolean', 'Xclydes\Larva\Fields\BooleanType');
 		//Use the model instance
 		$inst = $this->getModel();
 		//Get the table name
@@ -69,12 +74,11 @@ class EloquentForm extends Form {
 			$fieldData = $this->tblData[$fieldName];
 			//Assume the type is to be resolved
 			$formFieldType = null;
-			$values = array();
 			//Assume displayed
 			$displayed = true;
 			//Assume included
 			$included = true;
-			//
+			//Does the form support the advanced features?
 			$formSupport = $inst instanceof IFormEloquent;
 			//If the model is a form eloquent
 			if( $formSupport ) {
@@ -110,18 +114,30 @@ class EloquentForm extends Form {
 			if( $formSupport ) {
 				//Merge any custom options
 				$options = array_merge($inst->getFieldInitOptions($formFieldType, $fieldData), $options);
-			}			
+			}
 			//echo "Add {$fieldName} => {$formFieldType}. Options: " . print_r($options, true)."<br />";
 			//Add the field
 			$this->add($fieldName, $formFieldType, $options);
 		}
 		//Add the save/submit button
-		$this->add('save', 'submit', [
+		$this->add('submit', 'submit', [
 			'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.save'), 
 			'attr' => [
 				'class' => $this->getFormOption('btn.save.class', 'btn btn-success pull-right')
 			]				
 		]);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
+	 */
+	protected function setupFieldOptions($name, &$options) {
+		//If the realname was not already set
+		if( !isset( $options['real_name'] ) ) {
+			//Resolve and set it now
+			$options['real_name'] = LarvaHelper::resolveColumnName( $this->getModel(), $name );
+		}
 	}
 	
 	/**
@@ -208,20 +224,7 @@ class EloquentForm extends Form {
 		$ruleParts = array();
 		//Process only if the field is included
 		if( $included ) {
-			$fieldName = $fieldData['name'];
-			$displayed = $fieldData['displayed'];
 			//var_dump($fieldData);
-			//If the field it not null
-			if( $fieldData['not_null'] ) {
-				array_push($ruleParts, "required");
-			}
-			//If the field has a single foreign key
-			if( count( $fieldData['fkeys'] ) == 1
-				&& count( $fieldData['fkeys'][0]['columns'] ) == 1
-				&& $fieldData['fkeys'][0]['table'] ) {
-				//The value must exist
-				array_push($ruleParts, "exists:{$fieldData['fkeys'][0]['table']},{$fieldData['fkeys'][0]['columns']['0']}");
-			}
 			//TODO Possible use the 'in' rule
 			//If the table data is a text field with a length
 			if( $fieldData['is_text'] && intval( $fieldData['length'] ) > 0 ) {
@@ -243,6 +246,18 @@ class EloquentForm extends Form {
 				//The value must be true of false
 				array_push($ruleParts, "boolean");
 			}
+			//If the field it not null
+			if( $fieldData['not_null']
+				&& !$fieldData['is_boolean']  ) {
+				array_push($ruleParts, "required");
+			}
+			//If the field has a single foreign key
+			if( count( $fieldData['fkeys'] ) == 1
+				&& count( $fieldData['fkeys'][0]['columns'] ) == 1
+				&& $fieldData['fkeys'][0]['table'] ) {
+				//The value must exist
+				array_push($ruleParts, "exists:{$fieldData['fkeys'][0]['table']},{$fieldData['fkeys'][0]['columns']['0']}");
+			}								
 		}
 		return empty( $ruleParts ) ? null : implode('|', $ruleParts);
 	}
@@ -258,7 +273,6 @@ class EloquentForm extends Form {
 	 * @return string The field type to be used.
 	 */
 	protected function resolveFieldType($fieldData) {
-		$fieldName = $fieldData['name'];
 		$included = $fieldData['included'];
 		$displayed = $fieldData['displayed'];
 		$fType = 'text';
@@ -277,7 +291,7 @@ class EloquentForm extends Form {
 				//Else use a date selection field
 				$fType = 'text';
 			} else if( $fieldData['is_boolean'] ) {
-				$fType = 'radio';
+				$fType = 'boolean';
 			} else if( $fieldData['is_int'] ) {
 				$fType = 'number';
 			} else {//Assume it is text

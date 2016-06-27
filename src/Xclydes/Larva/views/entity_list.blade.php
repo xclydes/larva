@@ -2,7 +2,7 @@
 
 @section('content')
 	<div class="row">
-		<a href="{{ URL::route($lowerCls . '.create' ) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
+		<a href="{{ URL::route($routePrefix . '.create' ) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>
 	<table class="table table-striped">
 		<thead>
@@ -18,13 +18,13 @@
 			   	@foreach ($items as $item)
 			   	<tr>
 				    @foreach ($displayFields as $displayKey=>$displayField)
-					   	<td>{{  HTML::linkRoute($lowerCls . '.edit', $item->{$displayKey}, array( $item->getKey() ) ) }} </td>
+					   	<td>{{  Html::linkRoute($routePrefix . '.edit', LarvaHelper::resolveForDisplay($item, $displayKey, $form), array( $item->getKey() ) ) }} </td>
 					@endforeach
 					<td width="10%">
-						<a href="{{ URL::route($lowerCls . '.edit', array( $item->getKey() ) ) }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+						<a href="{{ URL::route($routePrefix . '.edit', array( $item->getKey() ) ) }}" class="btn btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
 						&nbsp;
 						<!-- 
-						<a href="{{ URL::route($lowerCls . '.destroy', array( $item->getKey() ) ) }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+						<a href="{{ URL::route($routePrefix . '.destroy', array( $item->getKey() ) ) }}" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
 						 -->
 					</td>
 				</tr>
@@ -35,6 +35,6 @@
 		</tbody>
 	</table>
 	<div class="row">
-		<a href="{{ URL::route($lowerCls . '.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
+		<a href="{{ URL::route($routePrefix . '.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>
 @endsection

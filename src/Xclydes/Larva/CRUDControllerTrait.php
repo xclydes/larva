@@ -37,6 +37,33 @@ trait  CRUDControllerTrait {
 		return $instance;
 	}
 	
+	/**
+	 * Gets the prefix for used to when defining routes
+	 * for this controler.
+	 */
+	protected function getRoutePrefix() {
+		return strtolower( $this->getModelClassName() );
+	}
+	
+	/**
+	 * Generates the dot notation for the action and 
+	 * instance specified as it would to this controller.
+	 * @param unknown $instance The instance to which the
+	 * path should reference if necessary.
+	 * @param unknown $dst The action to be included in the URL.
+	 * @return string The route description to be used.
+	 */
+	protected function getDestination( $instance, $dst ) {
+		return $this->getRoutePrefix() . '.' . $dst;
+	}
+	
+	/**
+	 * Triggers the processes necessary to generate the form
+	 * this controller links to.
+	 * @param stdclass $instance The object to used as reference.
+	 * @return \Kris\LaravelFormBuilder\Form The form implementation
+	 * which is to be rendered.
+	 */
 	protected function createForm( $instance) {
 		//Assume store
 		$dst = 'store';
@@ -54,7 +81,7 @@ trait  CRUDControllerTrait {
 			array_push($routeParams, $instance->getKey());
 		}
 		//Build the route
-		$route = route(strtolower( $this->getModelClassName() ) . '.' . $dst, $routeParams);
+		$route = route($this->getDestination( $instance, $dst ) , $routeParams);
 		//Generate the form
 		$frm = $this->form(EloquentForm::class, [
 			'method' => $method,//Prefer POST
@@ -74,7 +101,7 @@ trait  CRUDControllerTrait {
 	public function index()
 	{
 		$cls = $this->getModelClass();
-		$lowerCls = strtolower( $this->getModelClassName() );
+		$routePrefix = $this->getRoutePrefix();
 		//Get the worker instance
 		$worker = $this->getModelInstance( null );
 		//Get the form data
@@ -84,8 +111,8 @@ trait  CRUDControllerTrait {
 		//Get all the entries
 		$items = $cls::all();
 		// load the view and pass the nerds
-		return View::make( "xclydes-larva::entity_list" )
-		->with(compact('cls', 'lowerCls', 'items', 'worker', 'form', 'displayFields') );
+		return View::make( _XCLYDESLARVA_NS_RESOURCES_ . "::entity_list" )
+		->with(compact('cls', 'routePrefix', 'items', 'worker', 'form', 'displayFields') );
 	}
 	
 	/**
@@ -127,7 +154,7 @@ trait  CRUDControllerTrait {
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
 		// load the view and pass the nerds
-		return View::make("xclydes-larva::entity_addedit")
+		return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
 		->with('instance', $instance)
 		->with('form', $this->createForm( $instance ) );
 	}
@@ -175,7 +202,7 @@ trait  CRUDControllerTrait {
 			//TODO Set a success flash message
 			trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.' . $msgType, ['type'=>$this->getModelClassName()]);
 			//Redirect to the listing
-			$redir = redirect()->route( strtolower( $this->getModelClassName() ) . '.index' );
+			$redir = redirect()->route( $this->getRoutePrefix() . '.index' );
 		}
 		return $redir;
 	}
@@ -193,6 +220,6 @@ trait  CRUDControllerTrait {
 		//Delete it
 		$instance->delete();
 		//Redirect
-		return redirect()->route( strtolower( $this->getModelClassName() ) . '.index' );
+		return redirect()->route( $this->getRoutePrefix() . '.index' );
 	}
 }
