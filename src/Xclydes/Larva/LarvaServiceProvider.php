@@ -1,10 +1,9 @@
 <?php namespace Xclydes\Larva;
 
-use Illuminate\Foundation\AliasLoader;
 use Collective\Html\FormBuilder as LaravelForm;
 use Collective\Html\HtmlBuilder;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\Application;
 
 class LarvaServiceProvider extends ServiceProvider {
 	
@@ -21,10 +20,8 @@ class LarvaServiceProvider extends ServiceProvider {
 		if( !defined( '_XCLYDESLARVA_NS_RESOURCES_' ) ) {
 			define('_XCLYDESLARVA_NS_RESOURCES_', 'xclydes-larva');
 		}
-
-        $this->registerHtmlIfNeeded();
+		
         $this->registerFormIfNeeded();
-        $this->registerHelperIfNeeded();
 	}
 	
 	/**
@@ -47,19 +44,6 @@ class LarvaServiceProvider extends ServiceProvider {
 		], 'translations');
 	}
 	
-	/**
-	 * Add Laravel Form to container if not already set
-	 */
-	private function registerHelperIfNeeded()
-	{
-		if ( !$this->aliasExists('LarvaHelper') ) {
-			AliasLoader::getInstance()->alias(
-				'LarvaHelper',
-				'Xclydes\Larva\Helpers\LarvaHelper'
-			);
-		}
-	}
-	
 	//--Copies from Kris-Form-Builder
 	//https://github.com/kristijanhusak/laravel-form-builder
 	
@@ -68,6 +52,22 @@ class LarvaServiceProvider extends ServiceProvider {
 	 */
 	private function registerFormIfNeeded()
 	{
+		//Register collective html support
+		if (!$this->app->offsetExists('html')) {
+			
+			$this->app->singleton('html', function($app) {
+				return new HtmlBuilder($app['url'], $app['view']);
+			});
+				
+				if (! $this->aliasExists('Html')) {
+					
+					AliasLoader::getInstance()->alias(
+							'Html',
+							'Collective\Html\HtmlFacade'
+							);
+				}
+		}
+		
 		//Register collective form support
 		if (!$this->app->offsetExists('form')) {
 	
@@ -75,24 +75,27 @@ class LarvaServiceProvider extends ServiceProvider {
 	
 				// LaravelCollective\HtmlBuilder 5.2 is not backward compatible and will throw an exeption
 				// https://github.com/kristijanhusak/laravel-form-builder/commit/a36c4b9fbc2047e81a79ac8950d734e37cd7bfb0
-				if (substr(Application::VERSION, 0, 3) == '5.2') {
-					$form = new LaravelForm($app['html'], $app['url'], $app['view'], $app['session.store']->getToken());
-				}
-				else {
-					$form = new LaravelForm($app['html'], $app['url'], $app['session.store']->getToken());
-				}
-	
-				return $form->setSessionStore($app['session.store']);
+				$form = new LaravelForm($app['html'], $app['url'], $app['view'], csrf_token());
+				
+				return $form->setSessionStore( $app['session.store'] );
 			});
 	
-			if (! $this->aliasExists('Form')) {
-	
+			if (! $this->aliasExists('Form')) {	
 				AliasLoader::getInstance()->alias(
 					'Form',
 					'Collective\Html\FormFacade'
 				);
 			}
 		}
+		
+		//Add the laravel input Facade if not added
+		if (! $this->aliasExists('Input')) {
+			AliasLoader::getInstance()->alias(
+				'Input',
+				'Illuminate\Support\Facades\Input'
+			);
+		}
+		
 		//Add Kris FormBuilder if not registered
 		$this->app->register('Kris\LaravelFormBuilder\FormBuilderServiceProvider');
 		if ( !$this->aliasExists('FormBuilder') ) {		
@@ -101,27 +104,12 @@ class LarvaServiceProvider extends ServiceProvider {
 				'Kris\LaravelFormBuilder\Facades\FormBuilder'
 			);
 		}
-	}
-	
-	/**
-	 * Add Laravel Html to container if not already set
-	 */
-	private function registerHtmlIfNeeded()
-	{
-		//Register collective html support
-		if (!$this->app->offsetExists('html')) {
-	
-			$this->app->singleton('html', function($app) {
-				return new HtmlBuilder($app['url'], $app['view']);
-			});
-	
-			if (! $this->aliasExists('Html')) {
-	
-				AliasLoader::getInstance()->alias(
-					'Html',
-					'Collective\Html\HtmlFacade'
-				);
-			}
+		
+		if ( !$this->aliasExists('LarvaHelper') ) {
+			AliasLoader::getInstance()->alias(
+					'LarvaHelper',
+					'Xclydes\Larva\Helpers\LarvaHelper'
+					);
 		}
 	}
 	
