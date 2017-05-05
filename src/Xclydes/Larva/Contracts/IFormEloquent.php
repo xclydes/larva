@@ -38,4 +38,10 @@ interface IFormEloquent {
 	 * being processed.
 	 */
 	function getPreferredFieldType( $fieldData );
+	
+	/**
+	 * Gets sql string to be used as the description of
+	 * entity. 
+	 */
+	static function getDescriptionField();
 }
