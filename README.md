@@ -1,5 +1,7 @@
 # larva
 
+A ORM to form implementation designed for laravel.
+
 In order to include this package using composer, you will need to do the following:-
 
 1. Modify you composer.json file to include:-
