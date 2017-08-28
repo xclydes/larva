@@ -58,6 +58,15 @@ trait FormEloquentTrait {
 			$fqN = self::getForeignModel( $foreignTableName );
 			//Add the entity class
 			$opts['class'] = $fqN;
+			//Get the property field
+			$propField = $fieldData['fkeys'][0]["columns"][0];
+			$opts['property_key'] = $propField;
+			$nameField = $propField;
+			$clsChain = class_implements( $fqN);
+			if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
+				$nameField = $fqN::getDescriptionField();
+			}
+			$opts['property'] = $nameField;	
 		}
 		return $opts;
 	}	
