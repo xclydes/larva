@@ -121,7 +121,7 @@ class EloquentForm extends Form {
 		}
 		//Is the cancell button enabled
         if( config( 'larva.edit.footer.cancel') ) {
-		    $this->add('button', 'footer_cancel', [
+		    $this->add('footer_cancel', 'button', [
                 'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
                 'attr' => [
                     'class' => $this->getFormOption('btn.cancel.class', 'btn btn-danger')
