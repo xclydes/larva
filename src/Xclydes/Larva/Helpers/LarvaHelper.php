@@ -47,13 +47,23 @@ class LarvaHelper {
 					}
 				}
 			}
-			//If it was translated correctly
-			if( $transValid ) {
-				//Use this translation
-				$txt = $translated;
-			}
-		}
-		return $txt;
+            //If it was translated correctly
+            if( $transValid ) {
+                //Use this translation
+                $txt = $translated;
+            }
+        }
+        //If the text is not valid
+        if( !$txt ) {
+		    //Get the config default
+            $defKey = config('larva.list.row.empty', false);
+            //If a key is set
+            if( $defKey ) {
+                //Translate the default key
+                $txt = trans( $defKey );
+            }
+        }
+        return $txt;
 	}
 	
 	/**

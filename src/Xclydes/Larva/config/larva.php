@@ -15,6 +15,9 @@ return [
         ],
         'footer' => [
             'new' => false
+        ],
+        'row' => [
+            'empty' => '<Empty>'
         ]
     ]
 ];
