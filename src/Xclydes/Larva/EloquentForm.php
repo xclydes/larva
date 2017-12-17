@@ -133,11 +133,11 @@ class EloquentForm extends Form {
 	 * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
 	 */
 	protected function setupFieldOptions($name, &$options) {
-		//If the realname was not already set
+		/*//If the realname was not already set
 		if( !isset( $options['real_name'] ) ) {
 			//Resolve and set it now
 			$options['real_name'] = LarvaHelper::resolveColumnName( $this->getModel(), $name );
-		}
+		}*/
 	}
 	
 	/**
