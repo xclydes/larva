@@ -119,11 +119,15 @@ class EloquentForm extends Form {
 			//Add the field
 			$this->add($fieldName, $formFieldType, $options);
 		}
-		//Is the cancell button enabled
-        if( config( 'larva.edit.footer.cancel') ) {
+		//Is the cancel button enabled
+        $cancelRoute = $this->getFormOption('route_prefix', false);
+        if( config( 'larva.edit.footer.cancel')
+            && $cancelRoute ) {
 		    $this->add('footer_cancel', 'static', [
 		        'tag' => 'a',
+                'label' => false,
                 'elemAttrs' => $this->getFormOption('btn.cancel.class', 'btn btn-danger'),
+                'href' => route($cancelRoute . 'index'),
                 'value' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
             ]);
         }

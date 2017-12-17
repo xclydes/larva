@@ -86,7 +86,8 @@ trait  CRUDControllerTrait {
 		$frm = $this->form(EloquentForm::class, [
 			'method' => $method,//Prefer POST
 			'model' => $instance,//Reference this instance
-			'url' => $route//Build the route
+			'url' => $route//Build the route,
+            'route_prefix' => $this->getRoutePrefix()
 		]);
 		return $frm;
 	}
