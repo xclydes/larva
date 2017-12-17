@@ -127,7 +127,7 @@ class EloquentForm extends Form {
 		        'tag' => 'a',
                 'label' => false,
                 'elemAttrs' => $this->getFormOption('btn.cancel.class', 'btn btn-danger'),
-                'href' => route($cancelRoute . 'index'),
+                'href' => route($cancelRoute . '.index'),
                 'value' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
             ]);
         }
