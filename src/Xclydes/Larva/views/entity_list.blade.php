@@ -1,4 +1,4 @@
-@extends('app')
+@extends( config('larva.view.app') )
 
 @section('content')
 	<div class="row">

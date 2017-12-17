@@ -156,7 +156,8 @@ trait  CRUDControllerTrait {
 		// load the view and pass the nerds
 		return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
 		->with('instance', $instance)
-		->with('form', $this->createForm( $instance ) );
+		->with('form', $this->createForm( $instance ) )
+		->with('routePrefix', $this->getRoutePrefix());
 	}
 	
 	/*-- Storage Manipulation --*/

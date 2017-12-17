@@ -18,3 +18,9 @@ In order to include this package using composer, you will need to do the followi
 	> "xclydes/larva" : "dev-master"
 	
 Once complete you can run `composer update` to have the package imported.
+
+Add a custom provider in the app config 
+
+        Xclydes\Larva\LarvaServiceProvider::class,
+
+After import run `vendor:publish` to have the resources deployed.

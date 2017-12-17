@@ -19,6 +19,13 @@
 			"Xclydes\\Larva" : "src/"
 		}
 	},
+	"extra": {
+		"laravel": {
+			"providers": [
+				"Xclydes\\Larva\\LarvaServiceProvider"
+			]
+		}
+	},
 	"minimum-stability" : "dev",
 	"prefer-stable" : true
 }

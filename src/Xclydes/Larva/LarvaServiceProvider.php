@@ -1,4 +1,6 @@
-<?php namespace Xclydes\Larva;
+<?php
+
+namespace Xclydes\Larva;
 
 use Collective\Html\FormBuilder as LaravelForm;
 use Collective\Html\HtmlBuilder;
@@ -22,6 +24,7 @@ class LarvaServiceProvider extends ServiceProvider {
 		}
 		
         $this->registerFormIfNeeded();
+        $this->mergeConfigFrom( __DIR__.'/config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
 	}
 	
 	/**
@@ -42,7 +45,12 @@ class LarvaServiceProvider extends ServiceProvider {
 		$this->publishes([
 			$langDir => resource_path('lang/vendor/' . _XCLYDESLARVA_NS_RESOURCES_),
 		], 'translations');
-	}
+
+        /* Config */
+        $this->publishes([
+            __DIR__.'/config/larva.php' => config_path('larva.php'),
+        ], 'config');
+    }
 	
 	//--Copies from Kris-Form-Builder
 	//https://github.com/kristijanhusak/laravel-form-builder
