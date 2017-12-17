@@ -1,9 +1,11 @@
 @extends( config('larva.view.app') )
 
 @section('content')
+	@if( config('larva.list.header.new', false) )
 	<div class="row">
 		<a href="{{ URL::route($routePrefix . '.create' ) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>
+	@endif
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -34,7 +36,9 @@
 			@endif
 		</tbody>
 	</table>
+	@if( config('larva.list.footer.new', false) )
 	<div class="row">
 		<a href="{{ URL::route($routePrefix . '.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>
+	@endif
 @endsection

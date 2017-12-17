@@ -119,6 +119,15 @@ class EloquentForm extends Form {
 			//Add the field
 			$this->add($fieldName, $formFieldType, $options);
 		}
+		//Is the cancell button enabled
+        if( config( 'larva.edit.footer.cancel') ) {
+		    $this->add('button', 'footer_cancel', [
+                'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
+                'attr' => [
+                    'class' => $this->getFormOption('btn.cancel.class', 'btn btn-danger')
+                ]
+            ]);
+        }
 		//Add the save/submit button
 		$this->add('submit', 'submit', [
 			'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.save'), 

@@ -2,6 +2,19 @@
 
 return [
     'view' => [
-        'app' => 'app'
+        'app' => 'app',
+    ],
+    'edit' => [
+        'footer' => [
+            'cancel' => false
+        ]
+    ],
+    'list' => [
+        'header' => [
+            'new' => false
+        ],
+        'footer' => [
+            'new' => false
+        ]
     ]
 ];
