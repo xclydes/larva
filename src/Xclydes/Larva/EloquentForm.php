@@ -126,8 +126,8 @@ class EloquentForm extends Form {
 		    $this->add('footer_cancel', 'static', [
 		        'tag' => 'a',
                 'label' => false,
-                'elemAttrs' => $this->getFormOption('btn.cancel.class', 'btn btn-danger'),
-                'href' => route($cancelRoute . '.index'),
+                'class' => $this->getFormOption('btn.cancel.class', 'btn btn-danger'),
+                'elemAttrs' => 'href="' . route($cancelRoute . '.index') . '"',
                 'value' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
             ]);
         }
