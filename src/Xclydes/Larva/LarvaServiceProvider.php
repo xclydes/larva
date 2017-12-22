@@ -24,7 +24,7 @@ class LarvaServiceProvider extends ServiceProvider {
 		}
 		
         $this->registerFormIfNeeded();
-        $this->mergeConfigFrom( __DIR__.'../../config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
+        $this->mergeConfigFrom( __DIR__.'/../../config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
 	}
 	
 	/**
@@ -33,14 +33,14 @@ class LarvaServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		/* Views */
-		$viewsDir = __DIR__ . '../../views';
+		$viewsDir = __DIR__ . '/../../views';
 		$this->loadViewsFrom($viewsDir, _XCLYDESLARVA_NS_RESOURCES_);
 		$this->publishes([
 			$viewsDir => resource_path('views/vendor/' . _XCLYDESLARVA_NS_RESOURCES_)
 		], 'views');
 		
 		/* Languages */
-		$langDir = __DIR__.'../../lang';
+		$langDir = __DIR__.'/../../lang';
 		$this->loadTranslationsFrom($langDir, _XCLYDESLARVA_NS_RESOURCES_);		
 		$this->publishes([
 			$langDir => resource_path('lang/vendor/' . _XCLYDESLARVA_NS_RESOURCES_),
@@ -48,7 +48,7 @@ class LarvaServiceProvider extends ServiceProvider {
 
         /* Config */
         $this->publishes([
-            __DIR__.'../../config/larva.php' => config_path('larva.php'),
+            __DIR__.'/../../config/larva.php' => config_path( 'larva.php' ),
         ], 'config');
     }
 	
