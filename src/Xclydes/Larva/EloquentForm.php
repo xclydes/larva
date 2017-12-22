@@ -165,7 +165,7 @@ class EloquentForm extends Form {
 	 * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
 	 */
 	protected function setupFieldOptions($name, &$options) {
-	    //Calcuate the column size
+        //Calcuate the column size
         $columns = $this->getFormOption('field_column_count', 1);
         $maxCols = xclydes_larva_config('edit.columns.max', 12);
         //Calculate the column ration
@@ -186,7 +186,7 @@ class EloquentForm extends Form {
         //If no column count is set
         if( !isset( $formOptions['field_column_count'] ) ) {
             //Add the default columns, if none is set
-            $formOptions['field_column_count'] = xclydes_larva_config('edit.column.count', 1);
+            $formOptions['field_column_count'] = xclydes_larva_config('edit.columns.count', 1);
         }
         //Process normally
         return parent::setFormOptions($formOptions);
