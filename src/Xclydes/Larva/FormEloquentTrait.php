@@ -2,6 +2,8 @@
 namespace Xclydes\Larva;
 
 use Xclydes\Larva\Contracts\IFormEloquent;
+use Xclydes\Larva\Metadata\ForeignKey;
+use Xclydes\Larva\Metadata\TableColumn;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +12,7 @@ trait FormEloquentTrait {
 	private static $tableModels = [];
 	
 	/**
-	 * @return multitype:string 
+	 * @return string[]
 	 */
 	protected function getProtectedFields() {
 		return [
@@ -22,58 +24,79 @@ trait FormEloquentTrait {
 			IFormEloquent::FIELD_DELETED_BY,
 		];
 	}
-	
-	/* (non-PHPdoc)
-	 * @see \App\Xclydes\Larva\Contracts\IFormEloquent::isDisplayedInForm()
-	 */
+
+    /**
+     * Indicates whether or not the field specified
+     * should be added as field within the form.
+     * @param TableColumn $fieldData Details of the column
+     * in question.
+     * @return boolean
+     */
 	public function isDisplayedInForm( $fieldData ){
-		$fieldName = $fieldData['name'];
+		$fieldName = $fieldData->name;
 		//Assume the form is to be displayed
 		return !$this->isGuarded( $fieldName )
 			&& !in_array($fieldName, $this->getProtectedFields());
 	}
-	
-	/* (non-PHPdoc)
-	 * @see \App\Xclydes\Larva\Contracts\IFormEloquent::isIncludedInForm()
-	 */
+
+    /**
+     * Whether or not the field should be visible in the form.
+     * This does not mean it should be otherwise included.
+     * @param TableColumn $fieldData TableColumn Details of the column
+     * in question.
+     * @return boolean
+     */
 	public function isIncludedInForm($fieldData ){
-		$fieldName = $fieldData['name'];
+		$fieldName = $fieldData->name;
 		$inc = false;
 		$isFillable = empty( $this->fillable ) || in_array($fieldName, $this->fillable);
 		$isInternalField = in_array($fieldName, $this->getProtectedFields());
 		$inc = $fieldName && !$this->isGuarded( $fieldName ) && $isFillable && !$isInternalField;
 		return $inc;
 	}
-	
-	/* (non-PHPdoc)
-	 * @see \App\Xclydes\Larva\Contracts\IFormEloquent::getFieldInitOptions()
-	 */
+
+    /**
+     * Gets the initial list of options to be used
+     * for instantiating the field object.
+     * @param string $formFieldType The type of field that
+     * will be rendered.
+     * @param TableColumn $fieldData The field to be checked.
+     * @return mixed
+     */
 	public function getFieldInitOptions($formFieldType, $fieldData) {
 		$opts = array();
 		//If the field type says entity
 		if( $formFieldType == 'entity' ) {
-			//Resolve the class name
-			$foreignTableName = $fieldData['fkeys'][0]['table'];
-			//echo 'Foreign Table: ' . $foreignTableName . '<br />';
-			$fqN = self::getForeignModel( $foreignTableName );
-			//Add the entity class
-			$opts['class'] = $fqN;
-			//Get the property field
-			$propField = $fieldData['fkeys'][0]["columns"][0];
-			$opts['property_key'] = $propField;
-			$nameField = $propField;
-			$clsChain = class_implements( $fqN);
-			if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
-				$nameField = $fqN::getDescriptionField();
-			}
-			$opts['property'] = $nameField;	
+		    /** @var $firstFKey  ForeignKey */
+		    $firstFKey = array_shift( array_values( $fieldData->foreignKeys ) );
+		    if( $firstFKey != null ) {
+                //Get the property field
+                $propField = array_shift( array_values( $firstFKey->ownerColumns ) );
+                //Resolve the class name
+                $foreignTableName = $firstFKey->ownerTableName;
+                //echo 'Foreign Table: ' . $foreignTableName . '<br />';
+                $fqN = self::getForeignModel( $foreignTableName );
+                //Add the entity class
+                $opts['class'] = $fqN;
+                $opts['property_key'] = $propField;
+                $nameField = $propField;
+                $clsChain = class_implements( $fqN );
+                if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
+                    $nameField = $fqN::getDescriptionField();
+                }
+                $opts['property'] = $nameField;
+            }
 		}
 		return $opts;
-	}	
-	
-	/* (non-PHPdoc)
-	 * @see \App\Xclydes\Larva\Contracts\IFormEloquent::getPreferredFieldType()
-	 */
+	}
+
+    /**
+     * Gets the preferred field type for the column
+     * specified.
+     * @param TableColumn $fieldData The data for the field
+     * being processed.
+     * @return string
+     */
 	public function getPreferredFieldType( $fieldData ) {
 		//Return null to use defaul option
 		$prefType = null;
