@@ -23,7 +23,7 @@ class LarvaServiceProvider extends ServiceProvider {
 			define('_XCLYDESLARVA_NS_RESOURCES_', 'xclydes-larva');
 		}
         //Include the functions
-        require_once( __DIR__.'/../../scripts/functions.php' );
+        require_once( __DIR__.'/../../scripts/helpers.php' );
         $this->registerFormIfNeeded();
         $this->mergeConfigFrom( __DIR__.'/../../config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
 	}
@@ -49,7 +49,7 @@ class LarvaServiceProvider extends ServiceProvider {
 
         /* Config */
         $this->publishes([
-            __DIR__.'/../../config/larva.php' => config_path( 'larva.php' ),
+            __DIR__.'/../../config/larva.php' => config_path( _XCLYDESLARVA_NS_RESOURCES_ . '.php' ),
         ], 'config');
     }
 	
