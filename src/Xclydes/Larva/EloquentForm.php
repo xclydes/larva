@@ -169,7 +169,7 @@ class EloquentForm extends Form {
         $columns = $this->getFormOption('field_column_count', 1);
         $maxCols = xclydes_larva_config('edit.columns.max', 12);
         //Calculate the column ration
-        $colRatio = ((2 * $maxCols) / ( $columns * 3 ));
+        $colRatio = ($maxCols / $columns);
         //Set the wrapper option
         $wrapperOptsArr = array_get($options, 'wrapper', []);
         //Get the class option
