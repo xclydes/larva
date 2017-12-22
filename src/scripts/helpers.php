@@ -14,7 +14,7 @@ if( !function_exists('xclydes_larva_resouce') ) {
 }
 
 if( !function_exists('xclydes_larva_config') ) {
-    function xclydes_larva_config( $key, $def) {
+    function xclydes_larva_config( $key, $def = null) {
         return config( _XCLYDESLARVA_NS_RESOURCES_ . '.' . $key, $def );
     }
 }
