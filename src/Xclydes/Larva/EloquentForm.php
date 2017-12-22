@@ -167,6 +167,18 @@ class EloquentForm extends Form {
 	protected function setupFieldOptions($name, &$options) {
 	}
 
+	public function setFormOptions(array $formOptions)
+    {
+        //If no column count is set
+        if( !isset( $formOptions['field_column_count'] ) ) {
+            //Add the default columns, if none is set
+            $formOptions['field_column_count'] = xclydes_larva_config('edit.column.count', 1);
+        }
+        //Process normally
+        return parent::setFormOptions($formOptions);
+    }
+
+
     /**
      * Generates the validation rules to be applied to this field.
      * @param \Xclydes\Larva\Metadata\TableColumn $fieldData Description of the field

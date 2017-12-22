@@ -9,6 +9,9 @@ return [
         'footer' => [
             'cancel' => false
         ],
+        'columns' => [
+            'count' => 2
+        ],
         'wrapper' => [
             'open' => '<div class="row">',
             'close' => '</div>',
