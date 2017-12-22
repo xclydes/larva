@@ -8,9 +8,17 @@ return [
     'edit' => [
         'footer' => [
             'cancel' => false
+        ],
+        'wrapper' => [
+            'open' => '<div class="row">',
+            'close' => '</div>',
         ]
     ],
     'list' => [
+        'wrapper' => [
+            'open' => '<div class="row">',
+            'close' => '</div>',
+        ],
         'header' => [
             'new' => false
         ],

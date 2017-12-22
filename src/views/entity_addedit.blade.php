@@ -1,8 +1,8 @@
-@extends( xclydes_larva_config('view.app', 'app') )
+@extends( xclydes_larva_config('view.app') )
 
 
 @section('content')
-    <div class="row">
+{!! xclydes_larva_config('edit.wrapper.open') !!}
 	    {!! form( $form ) !!}
-    </div>
+{!! xclydes_larva_config('edit.wrapper.close') !!}
 @endsection
