@@ -3,6 +3,7 @@
 return [
     'view' => [
         'app' => 'app',
+        'form' => 'xclydes-larva::form'
     ],
     'edit' => [
         'footer' => [

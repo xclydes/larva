@@ -41,7 +41,7 @@ trait  CRUDControllerTrait {
 	
 	/**
 	 * Gets the prefix for used to when defining routes
-	 * for this controler.
+	 * for this controller.
 	 */
 	protected function getRoutePrefix() {
 		return strtolower( $this->getModelClassName() );
@@ -50,9 +50,9 @@ trait  CRUDControllerTrait {
 	/**
 	 * Generates the dot notation for the action and 
 	 * instance specified as it would to this controller.
-	 * @param unknown $instance The instance to which the
+	 * @param IFormEloquent|object $instance The instance to which the
 	 * path should reference if necessary.
-	 * @param unknown $dst The action to be included in the URL.
+	 * @param string $dst The action to be included in the URL.
 	 * @return string The route description to be used.
 	 */
 	protected function getDestination( $instance, $dst ) {
@@ -62,11 +62,11 @@ trait  CRUDControllerTrait {
 	/**
 	 * Triggers the processes necessary to generate the form
 	 * this controller links to.
-	 * @param stdclass $instance The object to used as reference.
+	 * @param IFormEloquent|object $instance The object to used as reference.
 	 * @return \Kris\LaravelFormBuilder\Form The form implementation
 	 * which is to be rendered.
 	 */
-	protected function createForm( $instance) {
+	protected function createForm( $instance ) {
 		//Assume store
 		$dst = 'store';
 		//Assume POST
@@ -89,7 +89,8 @@ trait  CRUDControllerTrait {
 			'method' => $method,//Prefer POST
 			'model' => $instance,//Reference this instance
 			'url' => $route,//Build the route
-            'route_prefix' => $this->getRoutePrefix()
+            'route_prefix' => $this->getRoutePrefix(),
+            'template' => config( 'larva.view.form' )
 		]);
 		return $frm;
 	}
@@ -98,7 +99,6 @@ trait  CRUDControllerTrait {
 	
 	/**
 	 * Display a listing of the resource.
-	 *
 	 * @return Response
 	 */
 	public function index()

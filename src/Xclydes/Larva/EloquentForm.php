@@ -56,6 +56,7 @@ class EloquentForm extends Form {
 	 */
 	public function buildForm()
 	{
+	    $this->registerCustomFields();
 		//Use the model instance
 		$inst = $this->getModel();
 		//Get the table name
@@ -158,7 +159,7 @@ class EloquentForm extends Form {
             ]
         ]);
     }
-	
+
 	/**
 	 * {@inheritDoc}
 	 * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
