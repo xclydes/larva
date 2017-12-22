@@ -1,7 +1,7 @@
-@extends( config('larva.view.app') )
+@extends( xclydes_larva_config('view.app') )
 
 @section('content')
-	@if( config('larva.list.header.new', false) )
+	@if( xclydes_larva_config('list.header.new', false) )
 	<div class="row">
 		<a href="{{ URL::route($routePrefix . '.create' ) }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>
@@ -36,7 +36,7 @@
 			@endif
 		</tbody>
 	</table>
-	@if( config('larva.list.footer.new', false) )
+	@if( xclydes_larva_config('list.footer.new', false) )
 	<div class="row">
 		<a href="{{ URL::route($routePrefix . '.create') }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;{{ trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.new') }}</a>
 	</div>

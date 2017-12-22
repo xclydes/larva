@@ -22,7 +22,8 @@ class LarvaServiceProvider extends ServiceProvider {
 		if( !defined( '_XCLYDESLARVA_NS_RESOURCES_' ) ) {
 			define('_XCLYDESLARVA_NS_RESOURCES_', 'xclydes-larva');
 		}
-		
+        //Include the functions
+        require_once( __DIR__.'/../../scripts/functions.php' );
         $this->registerFormIfNeeded();
         $this->mergeConfigFrom( __DIR__.'/../../config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
 	}

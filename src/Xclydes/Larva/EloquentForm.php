@@ -132,7 +132,7 @@ class EloquentForm extends Form {
     protected function createCancelButton($cancelRoute )
     {
         //Is the cancel button enabled
-        if ( config( 'larva.edit.footer.cancel', false )
+        if ( xclydes_larva_config('edit.footer.cancel', false )
             && $cancelRoute) {
             $this->add('footer_cancel', 'static', [
                 'tag' => 'a',

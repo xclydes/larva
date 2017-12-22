@@ -14,13 +14,8 @@ class LarvaHelper {
      */
     public static function resolveBundle( $inst ) {
 		$modelLangFileName = str_replace ( '\\', '_', strtolower ( get_class ( $inst ) ) );
-		return self::resolveResouce( $modelLangFileName );
+		return xclydes_larva_resouce( $modelLangFileName );
 	}
-
-
-    public static function resolveResouce( $rsc ) {
-        return _XCLYDESLARVA_NS_RESOURCES_ . '::' . $rsc;
-    }
 
     /**
 	 * @param IFormEloquent $inst The instance being checked.
@@ -69,7 +64,7 @@ class LarvaHelper {
         //If the text is not valid
         if( !$txt ) {
 		    //Get the config default
-            $defKey = config('larva.list.row.empty', false);
+            $defKey = xclydes_larva_config('list.row.empty', false);
             //If a key is set
             if( $defKey ) {
                 //Translate the default key

@@ -1,4 +1,4 @@
-@extends( config('larva.view.app') )
+@extends( xclydes_larva_config('view.app', 'app') )
 
 
 @section('content')

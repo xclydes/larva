@@ -91,7 +91,7 @@ trait  CRUDControllerTrait {
 			'model' => $instance,//Reference this instance
 			'url' => $route,//Build the route
             'route_prefix' => $this->getRoutePrefix(),
-            'template' => config( 'larva.view.form', LarvaHelper::resolveResouce( 'form' )  )
+            'template' => xclydes_larva_config( 'view.form', xclydes_larva_resouce( 'form' )  )
 		]);
 		return $frm;
 	}
