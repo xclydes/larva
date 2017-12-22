@@ -6,6 +6,7 @@ use \Request;
 use \Input;
 use Kris\LaravelFormBuilder\FormBuilderTrait;
 use Xclydes\Larva\Contracts\IFormEloquent;
+use Xclydes\Larva\Helpers\LarvaHelper;
 
 trait  CRUDControllerTrait {
 	
@@ -90,7 +91,7 @@ trait  CRUDControllerTrait {
 			'model' => $instance,//Reference this instance
 			'url' => $route,//Build the route
             'route_prefix' => $this->getRoutePrefix(),
-            'template' => config( 'larva.view.form' )
+            'template' => config( 'larva.view.form', LarvaHelper::resolveResouce( 'form' )  )
 		]);
 		return $frm;
 	}

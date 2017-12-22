@@ -14,10 +14,15 @@ class LarvaHelper {
      */
     public static function resolveBundle( $inst ) {
 		$modelLangFileName = str_replace ( '\\', '_', strtolower ( get_class ( $inst ) ) );
-		return _XCLYDESLARVA_NS_RESOURCES_ . '::' . $modelLangFileName;
+		return self::resolveResouce( $modelLangFileName );
 	}
-	
-	/**
+
+
+    public static function resolveResouce( $rsc ) {
+        return _XCLYDESLARVA_NS_RESOURCES_ . '::' . $rsc;
+    }
+
+    /**
 	 * @param IFormEloquent $inst The instance being checked.
 	 * @param string $fieldName The field in question.
      * @param EloquentForm $form The form being processed, if any.
