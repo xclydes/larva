@@ -42,7 +42,7 @@ class EloquentForm extends Form {
 				}
 			}		
 		} else {
-			$displayedColNames = array_keys( $this->getTableData() );
+			$displayedColNames = array_keys( $this->getTableData()->_getColumns() );
 		}
 		$displayedCols = array();
 		foreach ($displayedColNames as $displayedColName) {

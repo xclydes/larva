@@ -5,6 +5,7 @@ use \View;
 use \Request;
 use \Input;
 use Kris\LaravelFormBuilder\FormBuilderTrait;
+use Xclydes\Larva\Contracts\IFormEloquent;
 
 trait  CRUDControllerTrait {
 	
@@ -21,10 +22,11 @@ trait  CRUDControllerTrait {
 	protected function getModelClassName() {
 		return class_basename( (string) $this->getModelClass() );
 	}
-	
-	/**
-	 * @param unknown $id
-	 */
+
+    /**
+     * @param string|integer $id
+     * @return IFormEloquent|object
+     */
 	protected function getModelInstance( $id ) {
 		$instance = null;
 		$cls = $this->getModelClass();
@@ -113,13 +115,12 @@ trait  CRUDControllerTrait {
 		$items = $cls::all();
 		// load the view and pass the nerds
 		return View::make( _XCLYDESLARVA_NS_RESOURCES_ . "::entity_list" )
-		->with(compact('cls', 'routePrefix', 'items', 'worker', 'form', 'displayFields') );
+		    ->with(compact('cls', 'routePrefix', 'items', 'worker', 'form', 'displayFields') );
 	}
 	
 	/**
 	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
+	 * @return View
 	 */
 	public function create()
 	{
@@ -131,7 +132,7 @@ trait  CRUDControllerTrait {
 	 * Show the form for editing the specified resource.
 	 *
 	 * @param  int  $id
-	 * @return Response
+	 * @return View
 	 */
 	public function edit( $id )
 	{
@@ -148,36 +149,36 @@ trait  CRUDControllerTrait {
 	{
 		return $this->getModelInstance( $id );
 	}
-	
-	/**
-	 * @param string $id
-	 */
+
+    /**
+     * @param string $id
+     * @return View;
+     */
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
 		// load the view and pass the nerds
 		return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
-		->with('instance', $instance)
-		->with('form', $this->createForm( $instance ) )
-		->with('routePrefix', $this->getRoutePrefix());
+            ->with('instance', $instance)
+            ->with('form', $this->createForm( $instance ) )
+            ->with('routePrefix', $this->getRoutePrefix());
 	}
 	
 	/*-- Storage Manipulation --*/
-	
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
+
+    /**
+     * Store a newly created resource in storage.
+     * @return \Illuminate\Http\RedirectResponse
+     */
 	public function store()
 	{
 		return $this->doSaveUpdate( null );
 	}
-	
+
 	/**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
-	 * @return Response
+     * @return \Illuminate\Http\RedirectResponse
 	 */
 	public function update( $id )
 	{
@@ -202,7 +203,7 @@ trait  CRUDControllerTrait {
 			//Update the instance
 			$instance->fill( Input::all() )->save();
 			//TODO Set a success flash message
-			trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.' . $msgType, ['type'=>$this->getModelClassName()]);
+			$statusMsg = trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.' . $msgType, ['type'=>$this->getModelClassName()]);
 			//Redirect to the listing
 			$redir = redirect()->route( $this->getRoutePrefix() . '.index' );
 		}
