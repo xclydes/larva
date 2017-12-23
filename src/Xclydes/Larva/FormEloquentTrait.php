@@ -98,6 +98,7 @@ trait FormEloquentTrait {
                         } else {
                             //Use the first text column
                             foreach($ownerTableData->getColumns() as $ownerCol) {
+                                logger()->debug('Seeking Text Column...' . print_r($ownerCol, true));
                                 /** @var $ownerCol TableColumn */
                                 if( $ownerCol->isText ) {
                                     //Use this field
@@ -164,8 +165,8 @@ trait FormEloquentTrait {
     }
 
     /**
-     * @param unknown $foreignTableName
-     * @return Ambigous <NULL, string, mixed>
+     * @param string $foreignTableName
+     * @return string
      */
     private static function getForeignModel( $foreignTableName ) {
         $fqClsName = null;

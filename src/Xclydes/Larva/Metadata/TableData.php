@@ -7,8 +7,18 @@
  */
 namespace Xclydes\Larva\Metadata;
 
-use \Cache;
+use Cache;
 use DirectoryIterator;
+use Doctrine\DBAL\Types\BigIntType;
+use Doctrine\DBAL\Types\BooleanType;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\DateType;
+use Doctrine\DBAL\Types\DecimalType;
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\SmallIntType;
+use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\TimeType;
 use ReflectionClass;
 
 class TableData
