@@ -134,6 +134,7 @@ class TableData
     }
 
     private static function performAnalysis( $tblName ) {
+        logger()->debug('Analyze Table ' . $tblName);
         $columns = array();
         //Create a table data with the columns
         $tblData = new self();
@@ -147,6 +148,7 @@ class TableData
             $columns = self::processColumns( $table );
             //Process the foreign keys
             $fKeys = self::processForeignKeys( $table );
+            logger()->debug('FKeys ' . $tblName, $fKeys);
             //Associate the fkeys and columns
             foreach( $fKeys as $fKey ) {
                 /** @var $fKey ForeignKey */
@@ -251,9 +253,8 @@ class TableData
         $tbl = false;
         if( $force ) {
             self::forgetTable( $tblName );
-        } else {
-            $tbl = self::tableFromCache($tblName);
         }
+        $tbl = self::tableFromCache($tblName);
         //If the the table is not valid
         if( !$tbl ) {
             //Perform an analysis
