@@ -37,12 +37,14 @@ class ContainerType extends ParentType
         return $data;
     }
 
-    public function setOptions($options)
+    protected function getDefaults()
     {
-        //Add the wrapper options
-        $options['wrapper'] = [
-            'class' => 'row'
+        $opts = [
+            'is_group' => true,
+            'wrapper' => [
+                'class' => 'row'
+            ]
         ];
-        return parent::setOptions($options);
+        return $opts;
     }
 }

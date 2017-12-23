@@ -158,7 +158,7 @@ class EloquentForm extends Form {
     public function getFooterActionContainer() {
         if( !$this->footerActionContainer ) {
             //Create the footer container
-            $this->footerActionContainer = $this->makeField('footer_action_container', 'container', []);
+            $this->footerActionContainer = $this->makeField('footer_action_container', 'container', ['is_group' => true]);
             //Generate the cancel button
             $cancelRoute = $this->getFormOption('route_prefix', false);
             $this->createCancelButton( $this->footerActionContainer, $cancelRoute );
@@ -175,7 +175,7 @@ class EloquentForm extends Form {
     {
         if( !$this->headerActionContainer ) {
             //Create the header container
-            $this->headerActionContainer = $this->makeField('header_action_container', 'container', []);
+            $this->headerActionContainer = $this->makeField('header_action_container', 'container', ['is_group' => true]);
         }
         return $this->headerActionContainer;
     }
@@ -238,8 +238,9 @@ class EloquentForm extends Form {
         if ( xclydes_larva_config('edit.footer.cancel', false )
             && $cancelRoute) {
             $footerCancel = $this->makeField('footer_cancel', 'static', [
+                'is_group' => true,
                 'tag' => 'a',
-                'wrapper' => false,
+                'wrapper' => xclydes_larva_config('edit.actions.wrapper', false),
                 'label' => false,
                 'attr' => [
                     'href' => route($cancelRoute . '.index'),
@@ -259,6 +260,8 @@ class EloquentForm extends Form {
     protected function createSubmitButton( $appendTo ) {
         //Add the save/submit button
         $submitButton = $this->makeField('submit', 'submit', [
+            'is_group' => true,
+            'wrapper' => xclydes_larva_config('edit.actions.wrapper', false),
             'label' => trans( xclydes_larva_resouce('buttons.save') ),
             'attr' => [
                 'class' => $this->getFormOption('btn.save.class', 'btn btn-success pull-right')
@@ -277,7 +280,7 @@ class EloquentForm extends Form {
         //If this is not a group
         if( !array_get($options, 'is_group', false) ) {
             //Calculate the column size
-            $columns = $this->getFormOption('field_column_count', 1);
+            $columns = xclydes_larva_config('edit.columns.count', 1);
             $maxCols = xclydes_larva_config('edit.columns.max', 12);
             //Calculate the column ration
             $colRatio = ($maxCols / $columns);

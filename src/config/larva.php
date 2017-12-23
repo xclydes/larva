@@ -2,7 +2,7 @@
 
 return [
     'view' => [
-        'app' => 'app',
+        'app' => 'layouts.app',
         'form' => 'xclydes-larva::form'
     ],
     'edit' => [
@@ -10,7 +10,8 @@ return [
             'cancel' => false
         ],
         'columns' => [
-            'count' => 2
+            'count' => 2,
+            'max' => 12
         ],
         'wrapper' => [
             'open' => '<div class="container">',
@@ -26,6 +27,11 @@ return [
             'weight' => [
                 '*' => 0,
                 'textarea' => 999
+            ]
+        ],
+        'actions' => [
+            'wrapper' => [
+                'class' => 'col-md-6'
             ]
         ]
    ],
