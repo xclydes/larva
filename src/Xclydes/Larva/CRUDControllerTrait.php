@@ -22,7 +22,7 @@ trait  CRUDControllerTrait {
     }
 
     protected function getAddEditView() {
-        return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
+        return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit");
     }
 
 	/**
