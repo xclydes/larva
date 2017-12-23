@@ -110,7 +110,7 @@ class EloquentForm extends Form {
             $this->add($fieldData->name, $formFieldType, $options);
         }
         //Sort the list
-        usort($this->fields, [$this, 'compareFields']);
+        uasort ($this->fields, [$this, 'compareFields']);
         //Generate the cancel button
         $cancelRoute = $this->getFormOption('route_prefix', false);
         $this->createCancelButton( $cancelRoute );
