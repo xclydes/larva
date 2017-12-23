@@ -6,6 +6,7 @@ use Xclydes\Larva\Metadata\ForeignKey;
 use Xclydes\Larva\Metadata\TableColumn;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Xclydes\Larva\Metadata\TableData;
 
 trait FormEloquentTrait {
 	
@@ -71,22 +72,33 @@ trait FormEloquentTrait {
 		    $fKeys = array_values( $fieldData->foreignKeys );
 		    $firstFKey = array_shift( $fKeys );
 		    if( $firstFKey != null ) {
-		        $ownerCols = array_values( $firstFKey->ownerColumns );
-                //Get the property field
-                $propField = array_shift( $ownerCols );
-                //Resolve the class name
-                $foreignTableName = $firstFKey->ownerTableName;
-                //echo 'Foreign Table: ' . $foreignTableName . '<br />';
-                $fqN = self::getForeignModel( $foreignTableName );
-                //Add the entity class
-                $opts['class'] = $fqN;
-                $opts['property_key'] = $propField;
-                $nameField = $propField;
-                $clsChain = class_implements( $fqN );
-                if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
-                    $nameField = $fqN::getDescriptionField();
+		        //Get the related table
+                $ownerTable = $firstFKey->ownerTableName;
+                //Take the first property
+                $remoteCols = array_values( $firstFKey->ownerColumns );
+                $firstProp= array_shift( $remoteCols );
+                //Get the table data
+                $ownerTableData = TableData::analyzeTable( $ownerTable );
+                //If the table data is valid
+                if( $ownerTableData ) {
+                    //Get the list of possible classes
+                    $clsLst = $ownerTableData->getClasses();
+                    //If the list is not empty
+                    if( is_array( $clsLst )
+                        && count( $clsLst ) > 0 ) {
+                        //Use the first model
+                        $fqN = array_shift( $clsLst );
+                        //Add the entity class
+                        $opts['class'] = $fqN;
+                        $opts['property_key'] = $firstProp;
+                        $nameField = $firstProp;
+                        $clsChain = class_implements( $fqN );
+                        if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
+                            $nameField = $fqN::getDescriptionField();
+                        }
+                        $opts['property'] = $nameField;
+                    }
                 }
-                $opts['property'] = $nameField;
             }
 		}
 		return $opts;

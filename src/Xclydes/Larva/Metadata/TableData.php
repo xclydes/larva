@@ -8,6 +8,7 @@
 namespace Xclydes\Larva\Metadata;
 
 use \Cache;
+use DirectoryIterator;
 
 class TableData
 {
@@ -30,10 +31,97 @@ class TableData
     /**
      * Gets the table columns wrapped in a
      * collection.
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
     public function getColumns() {
         return collect( $this->_getColumns() );
+    }
+
+    /**
+     * Gets te
+     * @return \Illuminate\Support\Collection
+     */
+    public function getClasses() {
+        //Gather the class names
+        $classes = [];
+        //Get the class map
+        $clsMap = self::getClassMap();
+        foreach($clsMap as $cls=>$tbl) {
+            //If the table name matches
+            if( $tbl == $this->name ) {
+                //Add this class
+                array_push($classes, $cls);
+            }
+        }
+        return collect( $classes );
+    }
+
+    public static function getClassMap( $reload = false ) {
+        $mapCacheKey = _XCLYDESLARVA_NS_CLASSES_ . '::classes';
+        if( $reload ) {
+            Cache::forget( $mapCacheKey );
+        }
+        //Get the map from the cache
+        $map = Cache::get( $mapCacheKey );
+        //If nothing was found
+        if( !$map ) {
+            //Get the app path
+            self::loadClasses( app_path(), true);
+            //Get the list of loaded classes
+            $declaredClasses = get_declared_classes();
+            $clsMap = [];
+            //Generate a new map
+            foreach($declaredClasses as $clsName) {
+                //If it has the app prefix
+                if( starts_with( $clsName, 'App\\') ) {
+                    //Is it a model?
+                    if( is_subclass_of($clsName, '\\Illuminate\\Database\\Eloquent\\Model') ) {
+                        //Get the table from it
+                        try {
+                            /** @var $inst \Illuminate\Database\Eloquent\Model*/
+                            $inst = new $clsName;
+                            $tblName = $inst->getTable();
+                            //Add to the map
+                            $clsMap[$clsName] = $tblName;
+                        } catch (\Exception $err) {
+                            logger()->error($err->getMessage() . "\r\n" . $err->getTraceAsString() );
+                        }
+                    }
+                }
+            }
+            //Cache it for future reference
+            Cache::forever($mapCacheKey, $clsMap);
+            //Return the class map
+            $map = $clsMap;
+        }
+        return $map;
+    }
+
+    public static function loadClasses( $path,  $subDir = false) {
+        //Convert the slashes
+        $path = str_replace('\\', '/', $path);
+        //Finish the path
+        $path = str_finish( $path, '/' );
+        //Get all php files
+        $phpFiles = glob("$path*.php");
+        logger()->debug('Files in  ' . $path, $phpFiles);
+        foreach($phpFiles as $phpFile) {
+            try {
+                logger()->debug('Including ' . $phpFile);
+                include_once $phpFile;
+            }catch (\Exception $err) {
+                logger()->error($err->getMessage() . "\r\n" . $err->getTraceAsString() );
+            }
+        }
+        if( $subDir ) {
+            //Process the subdirectories
+            foreach (new DirectoryIterator( $path ) as $fileInfo) {
+                if(!$fileInfo->isDot()
+                   && $fileInfo->isDir() ) {
+                   loadClasses( $fileInfo->getPathname(), true );
+                }
+            }
+        }
     }
 
     /**
@@ -82,7 +170,7 @@ class TableData
      * to be checked.
      * @return ForeignKey[] The foriegn key data collected.
      */
-    private static function processForeignKeys($table ) {
+    private static function processForeignKeys( $table ) {
         //Get the foreign keys
         $fKeys = $table->getForeignKeys();
         //Process the foreign key data
