@@ -1,8 +1,3 @@
-<?php
-$columns = array_get( $formOptions, 'field_column_count', 1);
-$rowOpen = array_get( $formOptions, 'field_row_open', '');
-$rowClose = array_get( $formOptions, 'field_row_close', '');
-?>
 <?php if ($showStart): ?>
     <?= Form::open($formOptions) ?>
 <?php endif; ?>
@@ -11,10 +6,10 @@ $rowClose = array_get( $formOptions, 'field_row_close', '');
 
     <?php
     if( array_get( $formOptions, 'field_show_header', false) ) {
-        echo $rowOpen;
+        echo $field_row_open;
         //Render the header actions
         echo $form->getHeaderActionContainer()->render();
-        echo $rowClose;
+        echo $field_row_close;
     }
     ?>
 
@@ -29,31 +24,31 @@ $rowClose = array_get( $formOptions, 'field_row_close', '');
                 $isAgroup = $field->getOption('is_group', false);
                 if( $isAgroup && $colIndex != 0 ) {
                     $colIndex = 0;
-                    echo $rowClose;
+                    echo $field_row_close;
                 }
                 if( $colIndex == 0 ) {
                     $rowIndex++;
-                    echo $rowOpen;
+                    echo $field_row_open;
                 }
                 $colIndex++;
                 echo $field->render();
-                if( $isAgroup || $colIndex == $columns ) {
+                if( $isAgroup || $colIndex == $field_column_count ) {
                     $colIndex = 0;
-                    echo $rowClose;
+                    echo $field_row_close;
                 }
             }
         ?>
     <?php
         endforeach;
-        echo $rowClose;
+        echo $field_row_close;
     ?>
 
     <?php
     if( array_get( $formOptions, 'field_show_footer', true) ) {
-        echo $rowOpen;
+        echo $field_row_open;
             //Render the actions
             echo $form->getFooterActionContainer()->render();
-        echo $rowClose;
+        echo $field_row_close;
     }
     ?>
 

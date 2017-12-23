@@ -125,6 +125,34 @@ class EloquentForm extends Form {
     }
 
     /**
+     * Render the form.
+     *
+     * @param array $options
+     * @param string $fields
+     * @param bool $showStart
+     * @param bool $showFields
+     * @param bool $showEnd
+     * @return string
+     */
+    protected function render($options, $fields, $showStart, $showFields, $showEnd)
+    {
+        $formOptions = $this->formHelper->mergeOptions($this->formOptions, $options);
+
+        $this->setupNamedModel();
+
+        return $this->formHelper->getView()
+            ->make($this->getTemplate())
+            ->with(compact('showStart', 'showFields', 'showEnd'))
+            ->with( $this->getRenderData() )
+            ->with('formOptions', $formOptions)
+            ->with('fields', $fields)
+            ->with('model', $this->getModel())
+            ->with('exclude', $this->exclude)
+            ->with('form', $this)
+            ->render();
+    }
+
+    /**
      * @return ContainerType
      */
     public function getFooterActionContainer() {
@@ -245,6 +273,7 @@ class EloquentForm extends Form {
      * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
      */
     protected function setupFieldOptions($name, &$options) {
+        parent::setupFieldOptions($name, $options);
         //If this is not a group
         if( !array_get($options, 'is_group', false) ) {
             //Calculate the column size
@@ -264,27 +293,17 @@ class EloquentForm extends Form {
         }
     }
 
-    public function setFormOptions(array $formOptions)
+    protected function getRenderData()
     {
-        //If no column count is set
-        if( !isset( $formOptions['field_column_count'] ) ) {
-            //Add the default columns, if none is set
-            $formOptions['field_column_count'] = xclydes_larva_config('edit.columns.count', 1);
-        }
-        //If the row start is not set
-        if( !isset( $formOptions['field_row_open'] ) ) {
-            //Add the row start
-            $formOptions['field_row_open'] = xclydes_larva_config('edit.rows.wrapper.open');
-        }
-        //If the row end is not set
-        if( !isset( $formOptions['field_row_close'] ) ) {
-            //Add the row end
-            $formOptions['field_row_close'] = xclydes_larva_config('edit.rows.wrapper.close');
-        }
-        //Process normally
-        return parent::setFormOptions($formOptions);
+        $formOptions = [];
+        //Add the default columns, if none is set
+        $formOptions['field_column_count'] = xclydes_larva_config('edit.columns.count', 1);
+        //Add the row start
+        $formOptions['field_row_open'] = xclydes_larva_config('edit.rows.wrapper.open');
+        //Add the row end
+        $formOptions['field_row_close'] = xclydes_larva_config('edit.rows.wrapper.close');
+        return $formOptions;
     }
-
 
     /**
      * Generates the validation rules to be applied to this field.
