@@ -122,7 +122,7 @@ trait  CRUDControllerTrait {
 		//Get the worker instance
 		$instance = $this->getModelInstance( null );
 		//Get the form data
-		$form = $this->createForm( $worker );
+		$form = $this->createForm( $instance );
 		//Get all the entries
 		$items = $this->getItemsForPage();
 		// load the view and pass the nerds
