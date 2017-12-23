@@ -9,6 +9,7 @@ namespace Xclydes\Larva\Metadata;
 
 use \Cache;
 use DirectoryIterator;
+use ReflectionClass;
 
 class TableData
 {
@@ -78,11 +79,19 @@ class TableData
                     if( is_subclass_of($clsName, '\\Illuminate\\Database\\Eloquent\\Model') ) {
                         //Get the table from it
                         try {
-                            /** @var $inst \Illuminate\Database\Eloquent\Model*/
-                            $inst = new $clsName;
-                            $tblName = $inst->getTable();
-                            //Add to the map
-                            $clsMap[$clsName] = $tblName;
+                            //Load using reflection
+                            $reflected  = new ReflectionClass( $clsName );
+                            //If the class can be instantiated
+                            if( !$reflected->isInstantiable() ) {
+                                logger()->debug("Getting table for model {$clsName}...");
+                                /** @var $inst \Illuminate\Database\Eloquent\Model*/
+                                $inst = $reflected->newInstance();
+                                //Get the table name
+                                $tblName = $inst->getTable();
+                                logger()->debug("Model {$clsName} => Table {$tblName}.");
+                                //Add to the map
+                                $clsMap[$clsName] = $tblName;
+                            }
                         } catch (\Exception $err) {
                             logger()->error($err->getMessage() . "\r\n" . $err->getTraceAsString() );
                         }
