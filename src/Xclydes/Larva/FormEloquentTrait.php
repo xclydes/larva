@@ -113,7 +113,27 @@ trait FormEloquentTrait {
 				//This has to be a select type field
 				$prefType = 'select';				
 			}
-		}
+		} else {
+		    $fieldName = $fieldData->name;
+		    //If the dates attribute is set
+            if( property_exists($this, 'dates')
+                && is_array( $this->dates )
+                && in_array( $fieldName, $this->dates ) ) {
+                //Treat it as a date
+                $prefType = 'date';
+            }
+            //If a cast list is defined
+            if( property_exists($this, 'casts')
+                && is_array( $this->casts ) ) {
+                //Get the cast to type
+                $castTo = array_get($this->casts, $fieldName, false);
+                switch( $castTo ) {
+                    case 'boolean':
+                        $prefType = 'boolean';
+                        break;
+                }
+            }
+        }
 		return $prefType;
 	}
 	
