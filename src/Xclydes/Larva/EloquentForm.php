@@ -133,9 +133,9 @@ class EloquentForm extends Form {
             $this->footerActionContainer = $this->makeField('footer_action_container', 'container', []);
             //Generate the cancel button
             $cancelRoute = $this->getFormOption('route_prefix', false);
-            $this->createCancelButton( $this->actionContainer, $cancelRoute );
+            $this->createCancelButton( $this->footerActionContainer, $cancelRoute );
             //Generate the submit button
-            $this->createSubmitButton( $this->actionContainer );
+            $this->createSubmitButton( $this->footerActionContainer );
         }
         return $this->footerActionContainer;
     }
@@ -148,7 +148,6 @@ class EloquentForm extends Form {
         if( !$this->headerActionContainer ) {
             //Create the header container
             $this->headerActionContainer = $this->makeField('header_action_container', 'container', []);
-
         }
         return $this->headerActionContainer;
     }
