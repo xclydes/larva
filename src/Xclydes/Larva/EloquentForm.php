@@ -17,6 +17,16 @@ class EloquentForm extends Form {
     private $tblData;
 
     /**
+     * @var $headerActionContainer ContainerType
+     */
+    private $headerActionContainer;
+
+    /**
+     * @var $footerActionContainer ContainerType
+     */
+    private $footerActionContainer;
+
+    /**
      * Gets the TableData this form represents.
      * @return TableData
      */
@@ -112,15 +122,35 @@ class EloquentForm extends Form {
         }
         //Sort the list
         uasort ($this->fields, [$this, 'compareFields']);
-        //Create the container
-        $containerField = $this->makeField('action_container', 'container', []);
-        //Add the container
-        $this->addField( $containerField );
-        //Generate the cancel button
-        $cancelRoute = $this->getFormOption('route_prefix', false);
-        $this->createCancelButton( $containerField, $cancelRoute );
-        //Generate the submit button
-        $this->createSubmitButton( $containerField );
+    }
+
+    /**
+     * @return ContainerType
+     */
+    public function getFooterActionContainer() {
+        if( !$this->footerActionContainer ) {
+            //Create the footer container
+            $this->footerActionContainer = $this->makeField('footer_action_container', 'container', []);
+            //Generate the cancel button
+            $cancelRoute = $this->getFormOption('route_prefix', false);
+            $this->createCancelButton( $this->actionContainer, $cancelRoute );
+            //Generate the submit button
+            $this->createSubmitButton( $this->actionContainer );
+        }
+        return $this->footerActionContainer;
+    }
+
+    /**
+     * @return ContainerType
+     */
+    public function getHeaderActionContainer()
+    {
+        if( !$this->headerActionContainer ) {
+            //Create the header container
+            $this->headerActionContainer = $this->makeField('header_action_container', 'container', []);
+
+        }
+        return $this->headerActionContainer;
     }
 
     /**
@@ -208,7 +238,7 @@ class EloquentForm extends Form {
             ]
         ]);
         //Append the field
-        $appendTo->appendChild( $appendTo );
+        $appendTo->appendChild( $submitButton );
     }
 
     /**
