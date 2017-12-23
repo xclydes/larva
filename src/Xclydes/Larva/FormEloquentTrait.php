@@ -84,10 +84,9 @@ trait FormEloquentTrait {
                     //Get the list of possible classes
                     $clsLst = $ownerTableData->getClasses();
                     //If the list is not empty
-                    if( is_array( $clsLst )
-                        && count( $clsLst ) > 0 ) {
+                    if( $clsLst->isNotEmpty() ) {
                         //Use the first model
-                        $fqN = array_shift( $clsLst );
+                        $fqN = $clsLst->first();
                         //Add the entity class
                         $opts['class'] = $fqN;
                         $opts['property_key'] = $firstProp;
@@ -169,7 +168,7 @@ trait FormEloquentTrait {
                     //Get the class list
                     $foreignClasses = $foreignTableData->getClasses();
                     //Get the first class
-                    $fqClsName = array_shift( $foreignClasses );
+                    $fqClsName = $foreignClasses->first();
                     //If the class exists
                     if( class_exists( $fqClsName ) ) {
                         //Cache for future reference
