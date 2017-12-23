@@ -82,7 +82,7 @@ class TableData
                             //Load using reflection
                             $reflected  = new ReflectionClass( $clsName );
                             //If the class can be instantiated
-                            if( !$reflected->isInstantiable() ) {
+                            if( $reflected->isInstantiable() ) {
                                 logger()->debug("Getting table for model {$clsName}...");
                                 /** @var $inst \Illuminate\Database\Eloquent\Model*/
                                 $inst = $reflected->newInstance();
