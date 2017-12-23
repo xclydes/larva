@@ -165,6 +165,7 @@ class EloquentForm extends Form {
      */
     protected function registerCustomFields() {
         $this->addCustomField('boolean', 'Xclydes\Larva\Fields\BooleanType');
+        $this->addCustomField('container', 'Xclydes\Larva\Fields\ContainerType');
     }
 
     /**
