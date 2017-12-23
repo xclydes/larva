@@ -35,4 +35,15 @@ class ContainerType extends ParentType
         $data['children'] = $this->children;
         return $data;
     }
+
+    public function setOptions($options)
+    {
+        //Add the wrapper options
+        if( !isset( $options['wrapper'] ) ) {
+            $options['wrapper'] = [
+                'class' => 'row'
+            ];
+        }
+        return parent::setOptions($options);
+    }
 }
