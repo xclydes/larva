@@ -13,13 +13,19 @@ return [
             'count' => 2
         ],
         'wrapper' => [
-            'open' => '<div class="row">',
+            'open' => '<div class="container">',
             'close' => '</div>',
+        ],
+        'rows' =>[
+            'wrapper' => [
+                'open' => '<div class="row">',
+                'close' => '</div>',
+            ]
         ]
-    ],
+   ],
     'list' => [
         'wrapper' => [
-            'open' => '<div class="row">',
+            'open' => '<div class="container">',
             'close' => '</div>',
         ],
         'header' => [

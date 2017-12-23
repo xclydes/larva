@@ -188,6 +188,16 @@ class EloquentForm extends Form {
             //Add the default columns, if none is set
             $formOptions['field_column_count'] = xclydes_larva_config('edit.columns.count', 1);
         }
+        //If the row start is not set
+        if( !isset( $formOptions['field_row_open'] ) ) {
+            //Add the row start
+            $formOptions['field_row_open'] = xclydes_larva_config('edit.rows.wrapper.open');
+        }
+        //If the row end is not set
+        if( !isset( $formOptions['field_row_close'] ) ) {
+            //Add the row end
+            $formOptions['field_row_close'] = xclydes_larva_config('edit.rows.wrapper.close');
+        }
         //Process normally
         return parent::setFormOptions($formOptions);
     }
