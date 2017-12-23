@@ -68,7 +68,7 @@ class TableData
                 $col = array_get($columns, $colName, false);
                 if( $col !== false  ) {
                     //Set the keys on the column
-                    array_push($col->foreignKeys, $col);
+                    array_push($col->foreignKeys, $fKey);
                 }
             }
         }

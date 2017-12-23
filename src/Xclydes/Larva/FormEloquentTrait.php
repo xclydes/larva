@@ -102,8 +102,8 @@ trait FormEloquentTrait {
 		$prefType = null;
 		//If the field data has foreign key information
 		if( count( $fieldData->foreignKeys ) > 0 ) {
-			$foreignTableName = $fieldData->foreignKeys[0]->ownerTableName;
-			//echo 'Foreign Table: ' . $foreignTableName . '<br />';
+		    $firstEntry = $fieldData->foreignKeys[0];
+			$foreignTableName = $firstEntry->ownerTableName;
 			$fqN = self::getForeignModel( $foreignTableName );
 			//If the FQN exists
 			if( class_exists( $fqN ) ) {
