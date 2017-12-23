@@ -1,6 +1,7 @@
 <?php
 namespace Xclydes\Larva;
 
+use Kris\LaravelFormBuilder\Fields\ContainerType;
 use Kris\LaravelFormBuilder\Fields\FormField;
 use Kris\LaravelFormBuilder\Form;
 use Xclydes\Larva\Contracts\IFormEloquent;
@@ -111,11 +112,15 @@ class EloquentForm extends Form {
         }
         //Sort the list
         uasort ($this->fields, [$this, 'compareFields']);
+        //Create the container
+        $containerField = $this->makeField('action_container', 'container', []);
+        //Add the container
+        $this->addField( $containerField );
         //Generate the cancel button
         $cancelRoute = $this->getFormOption('route_prefix', false);
-        $this->createCancelButton( $cancelRoute );
+        $this->createCancelButton( $containerField, $cancelRoute );
         //Generate the submit button
-        $this->createSubmitButton();
+        $this->createSubmitButton( $containerField );
     }
 
     /**
@@ -165,14 +170,16 @@ class EloquentForm extends Form {
     /**
      * Create the form cancel buttons on the form with the route
      * provided.
+     * @param $appendTo ContainerType The container to which the button
+     * should be added.
      * @param $cancelRoute The route to be used.
      */
-    protected function createCancelButton($cancelRoute )
+    protected function createCancelButton( $appendTo, $cancelRoute )
     {
         //Is the cancel button enabled
         if ( xclydes_larva_config('edit.footer.cancel', false )
             && $cancelRoute) {
-            $this->add('footer_cancel', 'static', [
+            $footerCancel = $this->makeField('footer_cancel', 'static', [
                 'tag' => 'a',
                 'wrapper' => false,
                 'label' => false,
@@ -182,20 +189,25 @@ class EloquentForm extends Form {
                 ],
                 'value' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
             ]);
+            //Add it to the container
+            $appendTo->appendChild( $footerCancel );
         }
     }
 
     /**
      * Create the form submit button.
+     * @param $appendTo ContainerType The container to append to.
      */
-    protected function createSubmitButton() {
+    protected function createSubmitButton( $appendTo ) {
         //Add the save/submit button
-        $this->add('submit', 'submit', [
+        $submitButton = $this->makeField('submit', 'submit', [
             'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.save'),
             'attr' => [
                 'class' => $this->getFormOption('btn.save.class', 'btn btn-success pull-right')
             ]
         ]);
+        //Append the field
+        $appendTo->appendChild( $appendTo );
     }
 
     /**
