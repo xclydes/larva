@@ -246,7 +246,7 @@ class EloquentForm extends Form {
      */
     protected function setupFieldOptions($name, &$options) {
         //If this is not a group
-        if( array_get($options, 'is_group', false) ) {
+        if( !array_get($options, 'is_group', false) ) {
             //Calculate the column size
             $columns = $this->getFormOption('field_column_count', 1);
             $maxCols = xclydes_larva_config('edit.columns.max', 12);
