@@ -16,7 +16,15 @@ trait  CRUDControllerTrait {
 	 *
 	 */
 	protected abstract function getModelClass();
-	
+
+	protected function getIndexView() {
+        return View::make( _XCLYDESLARVA_NS_RESOURCES_ . "::entity_list" );
+    }
+
+    protected function getAddEditView() {
+        return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
+    }
+
 	/**
 	 * @return string
 	*/
@@ -115,7 +123,7 @@ trait  CRUDControllerTrait {
 		//Get all the entries
 		$items = $cls::all();
 		// load the view and pass the nerds
-		return View::make( _XCLYDESLARVA_NS_RESOURCES_ . "::entity_list" )
+		return $this->getIndexView()
 		    ->with(compact('cls', 'routePrefix', 'items', 'worker', 'form', 'displayFields') );
 	}
 	
@@ -158,7 +166,7 @@ trait  CRUDControllerTrait {
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
 		// load the view and pass the nerds
-		return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit")
+		return $this->getAddEditView()
             ->with('instance', $instance)
             ->with('form', $this->createForm( $instance ) )
             ->with('routePrefix', $this->getRoutePrefix());
