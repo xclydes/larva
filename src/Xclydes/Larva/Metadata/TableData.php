@@ -153,10 +153,13 @@ class TableData
             foreach( $fKeys as $fKey ) {
                 /** @var $fKey ForeignKey */
                 $keyColNames = array_values( $fKey->localColumns );
+                logger()->debug($tblName . ' Column Names ', $keyColNames);
                 $colName = array_shift( $keyColNames );
+                logger()->debug($tblName . ' First Column Name ' . $colName);
                 /** @var $col  TableColumn*/
                 $col = array_get($columns, $colName, false);
                 if( $col !== false  ) {
+                    logger()->debug( ' FKey Belongs to  ' . $tblName, ['table'=>$table, 'fkey' => $fKey]);
                     //Set the keys on the column
                     array_push($col->foreignKeys, $fKey);
                 }
@@ -182,6 +185,7 @@ class TableData
             //Create the key data
             $keyData = new ForeignKey();
             //Get the local names
+            $keyData->localTableName = $table->getName();
             $keyData->localColumns = $fKey->getLocalColumns();
             $keyData->ownerColumns = $fKey->getForeignColumns();
             $keyData->ownerTableName = $fKey->getForeignTableName( );
