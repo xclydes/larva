@@ -158,7 +158,7 @@ class EloquentForm extends Form {
     public function getFooterActionContainer() {
         if( !$this->footerActionContainer ) {
             //Create the footer container
-            $this->footerActionContainer = $this->makeField('footer_action_container', 'container', ['is_group' => true]);
+            $this->footerActionContainer = $this->makeField('footer_action_container', 'container', xclydes_larva_config('edit.container', []));
             //Generate the cancel button
             $cancelRoute = $this->getFormOption('route_prefix', false);
             $this->createCancelButton( $this->footerActionContainer, $cancelRoute );
@@ -175,7 +175,7 @@ class EloquentForm extends Form {
     {
         if( !$this->headerActionContainer ) {
             //Create the header container
-            $this->headerActionContainer = $this->makeField('header_action_container', 'container', ['is_group' => true]);
+            $this->headerActionContainer = $this->makeField('header_action_container', 'container', xclydes_larva_config('edit.container', []));
         }
         return $this->headerActionContainer;
     }

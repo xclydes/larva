@@ -29,7 +29,13 @@ return [
                 'textarea' => 999
             ]
         ],
-        'actions' => [
+        'container' => [
+            'is_group' => true,
+            'wrapper' => [
+                'class' => 'row '
+            ]
+        ],
+       'actions' => [
             'wrapper' => [
                 'class' => 'col-md-6'
             ]
