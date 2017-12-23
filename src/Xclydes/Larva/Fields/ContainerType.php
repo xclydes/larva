@@ -1,6 +1,8 @@
 <?php
 namespace Xclydes\Larva\Fields;
 
+use Kris\LaravelFormBuilder\Fields\ParentType;
+
 class ContainerType extends ParentType
 {
 
