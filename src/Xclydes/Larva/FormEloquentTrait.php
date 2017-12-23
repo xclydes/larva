@@ -68,10 +68,12 @@ trait FormEloquentTrait {
 		//If the field type says entity
 		if( $formFieldType == 'entity' ) {
 		    /** @var $firstFKey  ForeignKey */
-		    $firstFKey = array_shift( array_values( $fieldData->foreignKeys ) );
+		    $fKeys = array_values( $fieldData->foreignKeys );
+		    $firstFKey = array_shift( $fKeys );
 		    if( $firstFKey != null ) {
+		        $ownerCols = array_values( $firstFKey->ownerColumns );
                 //Get the property field
-                $propField = array_shift( array_values( $firstFKey->ownerColumns ) );
+                $propField = array_shift( $ownerCols );
                 //Resolve the class name
                 $foreignTableName = $firstFKey->ownerTableName;
                 //echo 'Foreign Table: ' . $foreignTableName . '<br />';

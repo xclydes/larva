@@ -283,12 +283,13 @@ class EloquentForm extends Form {
 
             //If the field has a single foreign key
             if( count( $fieldData->foreignKeys ) >= 1 ) {
-                $fKeys = $fieldData->foreignKeys;
-                $fKey = array_shift( array_values( $fKeys ) );
+                $fKeys = array_values( $fieldData->foreignKeys );
+                $fKey = array_shift( $fKeys );
                 if( count( $fKey->ownerColumns ) == 1
                     && $fKey->ownerTableName ) {
                     $remoteTableName = $fKey->ownerTableName;
-                    $remoteColumnName = array_shift( array_values( $fKey->ownerColumns ) );
+                    $ownerColumns = array_values( $fKey->ownerColumns );
+                    $remoteColumnName = array_shift( $ownerColumns );
                     //The value must exist
                     array_push($ruleParts, "exists:{$remoteTableName},{$remoteColumnName}");
                 }
