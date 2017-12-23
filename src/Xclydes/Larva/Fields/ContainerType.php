@@ -39,14 +39,10 @@ class ContainerType extends ParentType
 
     public function setOptions($options)
     {
-        //Set the group flag to tru
-        $options['is_group'] = true;
         //Add the wrapper options
-        if( !isset( $options['wrapper'] ) ) {
-            $options['wrapper'] = [
-                'class' => 'row'
-            ];
-        }
+        $options['wrapper'] = [
+            'class' => 'row'
+        ];
         return parent::setOptions($options);
     }
 }

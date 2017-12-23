@@ -6,10 +6,8 @@
 
     <?php
     if( array_get( $formOptions, 'field_show_header', false) ) {
-        echo $field_row_open;
         //Render the header actions
         echo $form->getHeaderActionContainer()->render();
-        echo $field_row_close;
     }
     ?>
 
@@ -45,10 +43,8 @@
 
     <?php
     if( array_get( $formOptions, 'field_show_footer', true) ) {
-        echo $field_row_open;
-            //Render the actions
-            echo $form->getFooterActionContainer()->render();
-        echo $field_row_close;
+        //Render the actions
+        echo $form->getFooterActionContainer()->render();
     }
     ?>
 
