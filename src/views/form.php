@@ -41,7 +41,7 @@
     <?php endforeach; ?>
     <?php
         //Render the actions
-        $form->getFooterActionContainer()->render();
+        echo $form->getFooterActionContainer()->render();
     ?>
 <?php endif; ?>
 
