@@ -24,8 +24,10 @@ class LarvaServiceProvider extends ServiceProvider {
 		}
         //Include the functions
         require_once( __DIR__.'/../../scripts/helpers.php' );
-        $this->registerFormIfNeeded();
+		//Merge the config
         $this->mergeConfigFrom( __DIR__.'/../../config/larva.php', _XCLYDESLARVA_NS_RESOURCES_);
+        //Setup the FormBuilder
+        $this->registerFormIfNeeded();
 	}
 	
 	/**
@@ -120,6 +122,8 @@ class LarvaServiceProvider extends ServiceProvider {
 					'Xclydes\Larva\Helpers\LarvaHelper'
 					);
 		}
+
+        //TODO Set the config options
 	}
 	
 	/**

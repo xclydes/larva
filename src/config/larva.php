@@ -43,5 +43,8 @@ return [
         'row' => [
             'empty' => '<Empty>'
         ]
+    ],
+    'kris' => [
+
     ]
 ];

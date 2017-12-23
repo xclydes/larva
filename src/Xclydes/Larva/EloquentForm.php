@@ -203,7 +203,7 @@ class EloquentForm extends Form {
      * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
      */
     protected function setupFieldOptions($name, &$options) {
-        //Calcuate the column size
+        //Calculate the column size
         $columns = $this->getFormOption('field_column_count', 1);
         $maxCols = xclydes_larva_config('edit.columns.max', 12);
         //Calculate the column ration
