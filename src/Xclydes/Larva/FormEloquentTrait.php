@@ -92,10 +92,11 @@ trait FormEloquentTrait {
                         $opts['property_key'] = $firstProp;
                         $nameField = $firstProp;
                         $clsChain = class_implements( $fqN );
-                        if( in_array( 'Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
+                        if( in_array( '\Xclydes\Larva\Contracts\IFormEloquent', $clsChain ) ) {
                             $nameField = $fqN::getDescriptionField();
                         }
                         $opts['property'] = $nameField;
+                        logger()->debug("FQN : '{$fqN}, Key : '{$firstProp}', Name : '{$nameField}'", $opts);
                     }
                 }
             }
