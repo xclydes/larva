@@ -12,7 +12,7 @@ class ContainerType extends ParentType
      */
     protected function getTemplate()
     {
-        return 'field_container';
+        return xclydes_larva_resouce('field_container' );
     }
 
     public function appendChild( $newField ) {

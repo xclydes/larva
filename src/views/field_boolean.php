@@ -16,11 +16,11 @@
 <?php if ($showField): ?>
 	<label class="radio-inline">
 		<?= Form::radio($name, 1, $options['checked'], $options['attr']) ?>
-		<?= trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.true'); ?>
+		<?= trans( xclydes_larva_resouce('messages.true') ); ?>
 	</label>
 	<label class="radio-inline">
 		<?= Form::radio($name, 0, !$options['checked'], $options['attr']) ?>
-		<?= trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.false'); ?>
+		<?= trans( xclydes_larva_resouce('messages.false') ); ?>
 	</label>
     <?php //include 'help_block.php' ?>
 <?php endif; ?>

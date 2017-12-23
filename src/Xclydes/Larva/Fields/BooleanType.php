@@ -6,7 +6,7 @@ class BooleanType extends CheckableType {
 
     protected function getTemplate()
     {
-        return _XCLYDESLARVA_NS_RESOURCES_ . '::field_boolean';
+        return xclydes_larva_resouce('field_boolean' );
     }
     
 }

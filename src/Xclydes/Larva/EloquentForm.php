@@ -188,7 +188,7 @@ class EloquentForm extends Form {
                     'href' => route($cancelRoute . '.index'),
                     'class' => $this->getFormOption('btn.cancel.class', 'btn btn-danger')
                 ],
-                'value' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.cancel'),
+                'value' => trans( xclydes_larva_resouce('buttons.cancel') ),
             ]);
             //Add it to the container
             $appendTo->appendChild( $footerCancel );
@@ -202,7 +202,7 @@ class EloquentForm extends Form {
     protected function createSubmitButton( $appendTo ) {
         //Add the save/submit button
         $submitButton = $this->makeField('submit', 'submit', [
-            'label' => trans(_XCLYDESLARVA_NS_RESOURCES_ . '::buttons.save'),
+            'label' => trans( xclydes_larva_resouce('buttons.save') ),
             'attr' => [
                 'class' => $this->getFormOption('btn.save.class', 'btn btn-success pull-right')
             ]

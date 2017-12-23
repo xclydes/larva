@@ -18,11 +18,11 @@ trait  CRUDControllerTrait {
 	protected abstract function getModelClass();
 
 	protected function getIndexView() {
-        return View::make( _XCLYDESLARVA_NS_RESOURCES_ . "::entity_list" );
+        return View::make(  xclydes_larva_resouce('entity_list') );
     }
 
     protected function getAddEditView() {
-        return View::make(_XCLYDESLARVA_NS_RESOURCES_ . "::entity_addedit");
+        return View::make(  xclydes_larva_resouce('entity_addedit') );
     }
 
 	/**
@@ -218,7 +218,7 @@ trait  CRUDControllerTrait {
 			//Update the instance
 			$instance->fill( Input::all() )->save();
 			//TODO Set a success flash message
-			$statusMsg = trans(_XCLYDESLARVA_NS_RESOURCES_ . '::messages.' . $msgType, ['type'=>$this->getModelClassName()]);
+			$statusMsg = trans( xclydes_larva_resouce('messages.' . $msgType), ['type'=>$this->getModelClassName()]);
 			//Redirect to the listing
 			$redir = redirect()->route( $this->getRoutePrefix() . '.index' );
 		}
