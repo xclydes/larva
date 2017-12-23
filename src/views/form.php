@@ -1,24 +1,31 @@
+<?php
+$columns = array_get( $formOptions, 'field_column_count', 1);
+$rowOpen = array_get( $formOptions, 'field_row_open', '');
+$rowClose = array_get( $formOptions, 'field_row_close', '');
+?>
 <?php if ($showStart): ?>
     <?= Form::open($formOptions) ?>
 <?php endif; ?>
 
 <?php if ($showFields): ?>
+
     <?php
-        $columns = 1;
-        $rowOpen = '';
-        $rowClose = '';
-        if( is_array( $formOptions ) ) {
-            $columns =  array_get( $formOptions, 'field_column_count', $columns);
-            $rowOpen = array_get( $formOptions, 'field_row_open', $rowOpen);
-            $rowClose = array_get( $formOptions, 'field_row_close', $rowClose);
-        }
-        $colIndex = 0;
-        $rowIndex = 0;
-        /** @var $field \Kris\LaravelFormBuilder\Fields\FormField */
+    if( array_get( $formOptions, 'field_show_header', false) ) {
+        echo $rowOpen;
+        //Render the header actions
+        echo $form->getHeaderActionContainer()->render();
+        echo $rowClose;
+    }
+    ?>
+
+    <?php
+    $colIndex = 0;
+    $rowIndex = 0;
+    /** @var $field \Kris\LaravelFormBuilder\Fields\FormField */
     ?>
     <?php foreach ($fields as $field): ?>
-    	<?php if( ! in_array($field->getName(), $exclude) ) { ?>
-            <?php
+        <?php
+            if( ! in_array($field->getName(), $exclude) ) {
                 $isAgroup = $field->getOption('is_group', false);
                 if( $isAgroup && $colIndex != 0 ) {
                     $colIndex = 0;
@@ -29,20 +36,27 @@
                     echo $rowOpen;
                 }
                 $colIndex++;
-            ?>
-        	<?= $field->render() ?>
-            <?php
+                echo $field->render();
                 if( $isAgroup || $colIndex == $columns ) {
                     $colIndex = 0;
                     echo $rowClose;
                 }
-            ?>
-		<?php } ?>
-    <?php endforeach; ?>
+            }
+        ?>
     <?php
-        //Render the actions
-        echo $form->getFooterActionContainer()->render();
+        endforeach;
+        echo $rowClose;
     ?>
+
+    <?php
+    if( array_get( $formOptions, 'field_show_footer', true) ) {
+        echo $rowOpen;
+            //Render the actions
+            echo $form->getFooterActionContainer()->render();
+        echo $rowClose;
+    }
+    ?>
+
 <?php endif; ?>
 
 <?php if ($showEnd): ?>

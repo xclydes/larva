@@ -245,20 +245,23 @@ class EloquentForm extends Form {
      * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
      */
     protected function setupFieldOptions($name, &$options) {
-        //Calculate the column size
-        $columns = $this->getFormOption('field_column_count', 1);
-        $maxCols = xclydes_larva_config('edit.columns.max', 12);
-        //Calculate the column ration
-        $colRatio = ($maxCols / $columns);
-        //Set the wrapper option
-        $wrapperOptsArr = array_get($options, 'wrapper', []);
-        //Get the class option
-        $wrapperClass = array_get($wrapperOptsArr, 'class', '');
-        //Append the column span
-        $wrapperClass .= " col-md-{$colRatio}";
-        $wrapperOptsArr['class'] = $wrapperClass;
-        //Update the wrapper attribute
-        $options['wrapper'] = $wrapperOptsArr;
+        //If this is not a group
+        if( array_get($options, 'is_group', false) ) {
+            //Calculate the column size
+            $columns = $this->getFormOption('field_column_count', 1);
+            $maxCols = xclydes_larva_config('edit.columns.max', 12);
+            //Calculate the column ration
+            $colRatio = ($maxCols / $columns);
+            //Set the wrapper option
+            $wrapperOptsArr = array_get($options, 'wrapper', []);
+            //Get the class option
+            $wrapperClass = array_get($wrapperOptsArr, 'class', '');
+            //Append the column span
+            $wrapperClass .= " col-md-{$colRatio}";
+            $wrapperOptsArr['class'] = $wrapperClass;
+            //Update the wrapper attribute
+            $options['wrapper'] = $wrapperOptsArr;
+        }
     }
 
     public function setFormOptions(array $formOptions)
