@@ -3,6 +3,7 @@
 	"description" : "A library to aid in the quickly developing CRUD functionality within a Larvel 5 applicaiton.",
 	"require" : {
 		"php" : ">=5.5.0",
+		"laravel/framework": "^5.0",
 		"illuminate/support" : "5.*@dev",
 		"laravelcollective/html" : "5.*",
 		"kris/laravel-form-builder" : "^1.6",
