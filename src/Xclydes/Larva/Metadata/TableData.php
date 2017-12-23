@@ -118,7 +118,7 @@ class TableData
             foreach (new DirectoryIterator( $path ) as $fileInfo) {
                 if(!$fileInfo->isDot()
                    && $fileInfo->isDir() ) {
-                   loadClasses( $fileInfo->getPathname(), true );
+                   self::loadClasses( $fileInfo->getPathname(), true );
                 }
             }
         }
