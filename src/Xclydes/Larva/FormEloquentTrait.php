@@ -112,10 +112,11 @@ trait FormEloquentTrait {
      * @return string
      */
 	public function getPreferredFieldType( $fieldData ) {
-		//Return null to use defaul option
+		//Return null to use default option
 		$prefType = null;
 		//If the field data has foreign key information
 		if( count( $fieldData->foreignKeys ) > 0 ) {
+		    //Get the list of classes
 		    $firstEntry = $fieldData->foreignKeys[0];
 			$foreignTableName = $firstEntry->ownerTableName;
 			$fqN = self::getForeignModel( $foreignTableName );
@@ -158,22 +159,26 @@ trait FormEloquentTrait {
 	private static function getForeignModel( $foreignTableName ) {
 		$fqClsName = null;
 		if( $foreignTableName ) {
-			$fqClsName = array_get(self::$tableModels, $foreignTableName);
-			if( !$fqClsName ){			
-				//Get the name space to check
-				$reflector = new \ReflectionClass( get_called_class() );
-				$nameSpace = $reflector->getNamespaceName();
-				//Get the expected class name
-				$className = Str::ucfirst( Str::singular( Str::camel( $foreignTableName ) ) );
-				$fqClsName = "\\{$nameSpace}\\{$className}";
-				//echo 'Possible Class Name: ' . $className . '<br />';
-				//If the class exists
-				if( class_exists( $fqClsName ) ) {
-					//Add this to the mapping
-					self::$tableModels[$foreignTableName] = $fqClsName;
-				}
-			}
+		    //Check the local cache
+            $fqClsName = array_get(self::$tableModels, $foreignTableName);
+            if( !$fqClsName ){
+                //Get the table data
+                $foreignTableData = TableData::analyzeTable( $foreignTableName );
+                //If the data is valid
+                if( $foreignTableData ) {
+                    //Get the class list
+                    $foreignClasses = $foreignTableData->getClasses();
+                    //Get the first class
+                    $fqClsName = array_shift( $foreignClasses );
+                    //If the class exists
+                    if( class_exists( $fqClsName ) ) {
+                        //Cache for future reference
+                        self::$tableModels[$foreignTableName] = $fqClsName;
+                    }
+                }
+            }
 		}
+		logger()->debug("Table '{$foreignTableName}'' => Model '{$fqClsName}''");
 		return $fqClsName;
 	}
 } 

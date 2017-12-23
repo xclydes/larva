@@ -159,7 +159,7 @@ class TableData
                 /** @var $col  TableColumn*/
                 $col = array_get($columns, $colName, false);
                 if( $col !== false  ) {
-                    logger()->debug( ' FKey Belongs to  ' . $tblName, ['table'=>$table, 'fkey' => $fKey]);
+                    logger()->debug( ' FKey Belongs to  ' . $tblName, ['column'=>$col, 'fkey' => $fKey]);
                     //Set the keys on the column
                     array_push($col->foreignKeys, $fKey);
                 }
