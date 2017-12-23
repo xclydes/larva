@@ -62,7 +62,8 @@ class TableData
             //Associate the fkeys and columns
             foreach( $fKeys as $fKey ) {
                 /** @var $fKey ForeignKey */
-                $colName = array_shift( array_values( $fKey->localColumns ) );
+                $keyColNames = array_values( $fKey->localColumns );
+                $colName = array_shift( $keyColNames );
                 /** @var $col  TableColumn*/
                 $col = array_get($columns, $colName, false);
                 if( $col !== false  ) {

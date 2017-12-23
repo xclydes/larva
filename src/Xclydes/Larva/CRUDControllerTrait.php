@@ -32,6 +32,11 @@ trait  CRUDControllerTrait {
 		return class_basename( (string) $this->getModelClass() );
 	}
 
+	protected function getItemsForPage( $page = null ) {
+	    $cls = $this->getModelClass();
+	    return $cls::all();
+    }
+
     /**
      * @param string|integer $id
      * @return IFormEloquent|object
@@ -115,16 +120,14 @@ trait  CRUDControllerTrait {
 		$cls = $this->getModelClass();
 		$routePrefix = $this->getRoutePrefix();
 		//Get the worker instance
-		$worker = $this->getModelInstance( null );
+		$instance = $this->getModelInstance( null );
 		//Get the form data
 		$form = $this->createForm( $worker );
-		//Get the display fields
-		$displayFields = $form->getDisplayedFields();
 		//Get all the entries
-		$items = $cls::all();
+		$items = $this->getItemsForPage();
 		// load the view and pass the nerds
 		return $this->getIndexView()
-		    ->with(compact('cls', 'routePrefix', 'items', 'worker', 'form', 'displayFields') );
+		    ->with(compact('cls', 'routePrefix', 'items', 'instance', 'form') );
 	}
 	
 	/**
@@ -165,11 +168,14 @@ trait  CRUDControllerTrait {
      */
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
-		// load the view and pass the nerds
+        //Get all the entries
+        $items = $this->getItemsForPage();
+        // load the view and pass the nerds
 		return $this->getAddEditView()
             ->with('instance', $instance)
             ->with('form', $this->createForm( $instance ) )
-            ->with('routePrefix', $this->getRoutePrefix());
+            ->with('routePrefix', $this->getRoutePrefix())
+            ->with('items', $items);
 	}
 	
 	/*-- Storage Manipulation --*/

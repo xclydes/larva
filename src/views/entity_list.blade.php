@@ -10,7 +10,7 @@
 	<table class="table table-striped">
 		<thead>
 			<tr>
-			@foreach ($displayFields as $displayKey=>$displayField)
+			@foreach ($form->getDisplayedFields() as $displayKey=>$displayField)
 			   	<th>{{ $displayField }} </th>
 			@endforeach
 			<th width="10%">Actions</th>
@@ -20,7 +20,7 @@
 			@if (count($items) > 0)
 			   	@foreach ($items as $item)
 			   	<tr>
-				    @foreach ($displayFields as $displayKey=>$displayField)
+				    @foreach ($form->getDisplayedFields() as $displayKey=>$displayField)
 					   	<td>{{  Html::linkRoute($routePrefix . '.edit', LarvaHelper::resolveForDisplay($item, $displayKey, $form), array( $item->getKey() ) ) }} </td>
 					@endforeach
 					<td width="10%">
@@ -33,7 +33,7 @@
 				</tr>
 				@endforeach
 			@else
-			    <tr><td colspan="{{ count($displayFields) + 1 }}">No Records Found</td></tr>
+			    <tr><td colspan="{{ count($form->getDisplayedFields()) + 1 }}">No Records Found</td></tr>
 			@endif
 		</tbody>
 	</table>
