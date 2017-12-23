@@ -1,120 +1,158 @@
 <?php
 namespace Xclydes\Larva;
 
+use Kris\LaravelFormBuilder\Fields\FormField;
 use Kris\LaravelFormBuilder\Form;
-use Illuminate\Support\Facades\Schema;
 use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\Helpers\LarvaHelper;
 use Xclydes\Larva\Metadata\TableColumn;
 use Xclydes\Larva\Metadata\TableData;
 
 class EloquentForm extends Form {
-	
-	const FIELDTYPE_HIDDEN = 'hidden';
-	const FIELDTYPE_STATIC = 'static';
-		
-	private $tblData;
-	
-	/**
+
+    const FIELDTYPE_HIDDEN = 'hidden';
+    const FIELDTYPE_STATIC = 'static';
+
+    private $tblData;
+
+    /**
      * Gets the TableData this form represents.
-	 * @return TableData
-	 */
-	public function getTableData() {
-		return $this->tblData;
-	}
-	
-	/**
-	 * Get the list of fields which should be
-	 * displayed in the form.
-	 * @return mixed
-	 */
-	public function getDisplayedFields() {
-		$displayedColNames = array();
-		$inst = $this->getModel();
-		$isFormEloquent = $inst instanceof IFormEloquent;
-		//If the model is a form eloquent
-		if( $isFormEloquent ) {
-			//Ensure the build process was already run
+     * @return TableData
+     */
+    public function getTableData() {
+        return $this->tblData;
+    }
+
+    /**
+     * Get the list of fields which should be
+     * displayed in the form.
+     * @return mixed
+     */
+    public function getDisplayedFields() {
+        $displayedColNames = array();
+        $inst = $this->getModel();
+        $isFormEloquent = $inst instanceof IFormEloquent;
+        //If the model is a form eloquent
+        if( $isFormEloquent ) {
+            //Ensure the build process was already run
             /** @var $col TableColumn */
             foreach($this->getTableData()->getColumns() as $col) {
-				if( $inst->isDisplayedInForm( $col ) ) {
-					array_push($displayedColNames, $col->name);
-				}
-			}		
-		} else {
-			$displayedColNames = array_keys( $this->getTableData()->_getColumns() );
-		}
-		$displayedCols = array();
-		foreach ($displayedColNames as $displayedColName) {
-			$displayedCols[$displayedColName] = LarvaHelper::resolveColumnName( $inst, $displayedColName );
-		}
-		return $displayedCols;
-	}
-		
-	/* (non-PHPdoc)
-	 * @see \Kris\LaravelFormBuilder\Form::buildForm()
-	 */
-	public function buildForm()
-	{
-	    $this->registerCustomFields();
-		//Use the model instance
-		$inst = $this->getModel();
-		//Get the table name
-		$tblName = $inst->getTable();
-		//Analyse the table
-		$this->tblData = TableData::analyzeTable( $tblName );
-		//Get the columns
+                if( $inst->isDisplayedInForm( $col ) ) {
+                    array_push($displayedColNames, $col->name);
+                }
+            }
+        } else {
+            $displayedColNames = array_keys( $this->getTableData()->_getColumns() );
+        }
+        $displayedCols = array();
+        foreach ($displayedColNames as $displayedColName) {
+            $displayedCols[$displayedColName] = LarvaHelper::resolveColumnName( $inst, $displayedColName );
+        }
+        return $displayedCols;
+    }
+
+    /* (non-PHPdoc)
+     * @see \Kris\LaravelFormBuilder\Form::buildForm()
+     */
+    public function buildForm()
+    {
+        $this->registerCustomFields();
+        //Use the model instance
+        $inst = $this->getModel();
+        //Get the table name
+        $tblName = $inst->getTable();
+        //Analyse the table
+        $this->tblData = TableData::analyzeTable( $tblName );
+        //Get the columns
         $tblColumns = $this->tblData->getColumns();
-		//Process the field names
+        //Process the field names
         /** @var $fieldData TableColumn */
         foreach( $tblColumns as $fieldData ) {
-			//Assume the type is to be resolved
-			$formFieldType = null;
-			//Does the form support the advanced features?
-			$formSupport = $inst instanceof IFormEloquent;
-			//If the model is a form eloquent
-			if( $formSupport ) {
-				//Update the table data
-				$fieldData->isDisplayed = $inst->isDisplayedInForm( $fieldData );
-				$fieldData->isIncluded = $inst->isIncludedInForm( $fieldData );
-				//echo "{$fieldName} => Displayed? {$displayed}, Included? {$included}<br />";
-				if( !$fieldData->isDisplayed
-					&& !$fieldData->isIncluded ) {
-					//echo "Skip {$fieldName}<br />";
-					//Skip it
-					continue;
-				}
-				//Mark the type for resolution
-				$formFieldType = $inst->getPreferredFieldType( $fieldData );
-			}
-			//If no field type was specified
-			if( !$formFieldType ) {
-				//Resolve the type to be used
-				$formFieldType = $this->resolveFieldType( $fieldData );
-			}	
-			$options = array();
-			//Determine the validation rules to apply
-			$validationRules = $this->resolveValidationRules( $fieldData );
-			//If rules are specified
-			if( $validationRules ) {
-				//Set them as part of the options
-				$options['rules'] = $validationRules;
-			}
-			//If the form options are supported
-			if( $formSupport ) {
-				//Merge any custom options
-				$options = array_merge($inst->getFieldInitOptions($formFieldType, $fieldData), $options);
-			}
-			//echo "Add {$fieldName} => {$formFieldType}. Options: " . print_r($options, true)."<br />";
-			//Add the field
-			$this->add($fieldData->name, $formFieldType, $options);
-		}
-		//Generate the cancel button
+            //Assume the type is to be resolved
+            $formFieldType = null;
+            //Does the form support the advanced features?
+            $formSupport = $inst instanceof IFormEloquent;
+            //If the model is a form eloquent
+            if( $formSupport ) {
+                //Update the table data
+                $fieldData->isDisplayed = $inst->isDisplayedInForm( $fieldData );
+                $fieldData->isIncluded = $inst->isIncludedInForm( $fieldData );
+                //echo "{$fieldName} => Displayed? {$displayed}, Included? {$included}<br />";
+                if( !$fieldData->isDisplayed
+                    && !$fieldData->isIncluded ) {
+                    //echo "Skip {$fieldName}<br />";
+                    //Skip it
+                    continue;
+                }
+                //Mark the type for resolution
+                $formFieldType = $inst->getPreferredFieldType( $fieldData );
+            }
+            //If no field type was specified
+            if( !$formFieldType ) {
+                //Resolve the type to be used
+                $formFieldType = $this->resolveFieldType( $fieldData );
+            }
+            $options = array();
+            //Determine the validation rules to apply
+            $validationRules = $this->resolveValidationRules( $fieldData );
+            //If rules are specified
+            if( $validationRules ) {
+                //Set them as part of the options
+                $options['rules'] = $validationRules;
+            }
+            //If the form options are supported
+            if( $formSupport ) {
+                //Merge any custom options
+                $options = array_merge($inst->getFieldInitOptions($formFieldType, $fieldData), $options);
+            }
+            //echo "Add {$fieldName} => {$formFieldType}. Options: " . print_r($options, true)."<br />";
+            //Add the field
+            $this->add($fieldData->name, $formFieldType, $options);
+        }
+        //Sort the list
+        usort($this->fields, [$this, 'compareFields']);
+        //Generate the cancel button
         $cancelRoute = $this->getFormOption('route_prefix', false);
-		$this->createCancelButton( $cancelRoute );
-		//Generate the submit button
-		$this->createSubmitButton();
-	}
+        $this->createCancelButton( $cancelRoute );
+        //Generate the submit button
+        $this->createSubmitButton();
+    }
+
+    /**
+     * Sorts the list of fields provided.
+     * @param FormField $fieldA The first field to be compared.
+     * @param FormField $fieldB The second field to be compared.
+     * @return int The result of the comparison.
+     */
+    protected function compareFields( $fieldA, $fieldB ) {
+        $diff = 0;
+        //If both are form fields
+        if( $fieldA instanceof FormField
+            && $fieldB instanceof FormField  ) {
+            //Compare the types
+            $diff = $this->getFieldWeight( $fieldA ) - $this->getFieldWeight( $fieldB );
+        }
+        return $diff;
+    }
+
+    /**
+     * Determines the weight of the field specified.
+     * Fields to be shown first should have lower values
+     * than fields to be shown last.
+     * @param FormField $field The field to be weighed.
+     * @return int The weight assigned.
+     */
+    protected function getFieldWeight( $field ) {
+        //Get the weight from the config
+        $weightsArr = xclydes_larva_config('edit.fields.weight', []);
+        //Get the default weight
+        $defWeight = array_get($weightsArr, '*', 999);
+        //Get the weight of the field
+        $fieldWeight = ($field instanceof FormField) && $field->getType() ?
+            array_get($weightsArr, $field->getType(), $defWeight) :
+            $defWeight;
+        return $fieldWeight;
+    }
 
     /**
      * Register any custom fields before the form
@@ -160,11 +198,11 @@ class EloquentForm extends Form {
         ]);
     }
 
-	/**
-	 * {@inheritDoc}
-	 * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
-	 */
-	protected function setupFieldOptions($name, &$options) {
+    /**
+     * {@inheritDoc}
+     * @see \Kris\LaravelFormBuilder\Form::setupFieldOptions()
+     */
+    protected function setupFieldOptions($name, &$options) {
         //Calcuate the column size
         $columns = $this->getFormOption('field_column_count', 1);
         $maxCols = xclydes_larva_config('edit.columns.max', 12);
@@ -181,7 +219,7 @@ class EloquentForm extends Form {
         $options['wrapper'] = $wrapperOptsArr;
     }
 
-	public function setFormOptions(array $formOptions)
+    public function setFormOptions(array $formOptions)
     {
         //If no column count is set
         if( !isset( $formOptions['field_column_count'] ) ) {
@@ -267,39 +305,39 @@ class EloquentForm extends Form {
      * @return string The recommended input type.
      */
     protected function resolveFieldType( $fieldData ) {
-		$included = $fieldData->isIncluded;
-		$displayed = $fieldData->isDisplayed;
-		$fType = 'text';
-		//TODO Handle special conditions
-		//If there is a relation
-		if( $displayed && !$included ) {
-			//Show as a label
-			$fType = self::FIELDTYPE_STATIC;
-		} else if( !$displayed && $included ) {
-			//Add as a hidden field
-			$fType = self::FIELDTYPE_HIDDEN;
-		} else {
-			//Is this a date field?
-			if( $fieldData->isDate ) {
-				//Is this date time?
-				//Else use a date selection field
-				$fType = 'text';
-			} else if( $fieldData->isBoolean ) {
-				$fType = 'boolean';
-			} else if( $fieldData->isInteger ) {
-				$fType = 'number';
-			} else {//Assume it is text
-				//TODO Get the text area threshold from the config
-				$txtSizeLimit = $this->getFormOption('textarea_minlen', 60);
-				//How big does it need to be
-				if( intval( $fieldData->length ) > $txtSizeLimit ) {
-					//Use a text area
-					$fType = 'textarea';
-				} else {
-					$fType = 'text';
-				}
-			}
-		}
-		return $fType;
-	}
+        $included = $fieldData->isIncluded;
+        $displayed = $fieldData->isDisplayed;
+        $fType = 'text';
+        //TODO Handle special conditions
+        //If there is a relation
+        if( $displayed && !$included ) {
+            //Show as a label
+            $fType = self::FIELDTYPE_STATIC;
+        } else if( !$displayed && $included ) {
+            //Add as a hidden field
+            $fType = self::FIELDTYPE_HIDDEN;
+        } else {
+            //Is this a date field?
+            if( $fieldData->isDate ) {
+                //Is this date time?
+                //Else use a date selection field
+                $fType = 'text';
+            } else if( $fieldData->isBoolean ) {
+                $fType = 'boolean';
+            } else if( $fieldData->isInteger ) {
+                $fType = 'number';
+            } else {//Assume it is text
+                //TODO Get the text area threshold from the config
+                $txtSizeLimit = $this->getFormOption('textarea_minlen', 60);
+                //How big does it need to be
+                if( intval( $fieldData->length ) > $txtSizeLimit ) {
+                    //Use a text area
+                    $fType = 'textarea';
+                } else {
+                    $fType = 'text';
+                }
+            }
+        }
+        return $fType;
+    }
 } 

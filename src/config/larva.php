@@ -19,7 +19,13 @@ return [
         'rows' =>[
             'wrapper' => [
                 'open' => '<div class="row">',
-                'close' => '</div>',
+                'close' => '</div><br />'
+            ]
+        ],
+        'fields' => [
+            'weight' => [
+                '*' => 0,
+                'textarea' => 999
             ]
         ]
    ],
