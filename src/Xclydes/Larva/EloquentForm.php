@@ -76,13 +76,13 @@ class EloquentForm extends Form {
         $this->tblData = TableData::analyzeTable( $tblName );
         //Get the columns
         $tblColumns = $this->tblData->getColumns();
+        //Does the form support the advanced features?
+        $formSupport = $inst instanceof IFormEloquent;
         //Process the field names
         /** @var $fieldData TableColumn */
         foreach( $tblColumns as $fieldData ) {
             //Assume the type is to be resolved
             $formFieldType = null;
-            //Does the form support the advanced features?
-            $formSupport = $inst instanceof IFormEloquent;
             //If the model is a form eloquent
             if( $formSupport ) {
                 //Update the table data

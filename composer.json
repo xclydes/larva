@@ -3,6 +3,8 @@
 	"description" : "A library to aid in the quickly developing CRUD functionality within a Larvel 5 applicaiton.",
 	"require" : {
 		"php" : ">=5.5.0",
+		"view-components/eloquent-data-processing": "^1.2",
+		"view-components/grids": "^0.5.9",
 		"laravel/framework": "^5.0",
 		"illuminate/support" : "5.*@dev",
 		"laravelcollective/html" : "5.*",

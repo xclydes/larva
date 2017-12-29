@@ -6,6 +6,8 @@ use Xclydes\Larva\EloquentForm;
 
 class LarvaHelper {
 
+    private static $tableModels = [];
+
     /**
      * Generates the expected path of the language file
      * for the instance supplied.
@@ -96,4 +98,34 @@ class LarvaHelper {
 		}
 		return $displayName;
 	}
+
+    /**
+     * @param string $foreignTableName
+     * @return string
+     */
+    public static function getForeignModel( $foreignTableName ) {
+        $fqClsName = null;
+        if( $foreignTableName ) {
+            //Check the local cache
+            $fqClsName = array_get(self::$tableModels, $foreignTableName);
+            if( !$fqClsName ){
+                //Get the table data
+                $foreignTableData = TableData::analyzeTable( $foreignTableName );
+                //If the data is valid
+                if( $foreignTableData ) {
+                    //Get the class list
+                    $foreignClasses = $foreignTableData->getClasses();
+                    //Get the first class
+                    $fqClsName = $foreignClasses->first();
+                    //If the class exists
+                    if( class_exists( $fqClsName ) ) {
+                        //Cache for future reference
+                        self::$tableModels[$foreignTableName] = $fqClsName;
+                    }
+                }
+            }
+        }
+        logger()->debug("Table '{$foreignTableName}' => Model '{$fqClsName}'");
+        return $fqClsName;
+    }
 }

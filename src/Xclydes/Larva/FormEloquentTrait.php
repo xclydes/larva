@@ -2,6 +2,7 @@
 namespace Xclydes\Larva;
 
 use Xclydes\Larva\Contracts\IFormEloquent;
+use Xclydes\Larva\Helpers\LarvaHelper;
 use Xclydes\Larva\Metadata\ForeignKey;
 use Xclydes\Larva\Metadata\TableColumn;
 use Illuminate\Support\Str;
@@ -9,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Xclydes\Larva\Metadata\TableData;
 
 trait FormEloquentTrait {
-
-    private static $tableModels = [];
 
     /**
      * @return string[]
@@ -131,7 +130,7 @@ trait FormEloquentTrait {
             //Get the list of classes
             $firstEntry = $fieldData->foreignKeys[0];
             $foreignTableName = $firstEntry->ownerTableName;
-            $fqN = self::getForeignModel( $foreignTableName );
+            $fqN = LarvaHelper::getForeignModel( $foreignTableName );
             //If the FQN exists
             if( class_exists( $fqN ) ) {
                 //Use the entity type
@@ -162,35 +161,5 @@ trait FormEloquentTrait {
             }
         }
         return $prefType;
-    }
-
-    /**
-     * @param string $foreignTableName
-     * @return string
-     */
-    private static function getForeignModel( $foreignTableName ) {
-        $fqClsName = null;
-        if( $foreignTableName ) {
-            //Check the local cache
-            $fqClsName = array_get(self::$tableModels, $foreignTableName);
-            if( !$fqClsName ){
-                //Get the table data
-                $foreignTableData = TableData::analyzeTable( $foreignTableName );
-                //If the data is valid
-                if( $foreignTableData ) {
-                    //Get the class list
-                    $foreignClasses = $foreignTableData->getClasses();
-                    //Get the first class
-                    $fqClsName = $foreignClasses->first();
-                    //If the class exists
-                    if( class_exists( $fqClsName ) ) {
-                        //Cache for future reference
-                        self::$tableModels[$foreignTableName] = $fqClsName;
-                    }
-                }
-            }
-        }
-        logger()->debug("Table '{$foreignTableName}' => Model '{$fqClsName}'");
-        return $fqClsName;
     }
 } 
