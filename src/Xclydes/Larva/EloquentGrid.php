@@ -39,7 +39,7 @@ class EloquentGrid extends Grid
         if( $inst instanceof IGridEloquent ) {
             //Get the provider options
             $provOpts = $inst->getGridProviderOptions();
-            if( is_a( $provOpts ) ) {
+            if( is_array( $provOpts ) ) {
                 $opts = array_merge($provOpts, $opts);
             }
         }
