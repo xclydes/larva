@@ -113,7 +113,8 @@ class EloquentGrid extends Grid
         //Get the field
         $fieldName = $fieldData->name;
         //Get the name
-        $colTitle = LarvaHelper::resolveForDisplay($this->getModel(), $fieldName);
+        $fieldTitle = LarvaHelper::resolveForDisplay($this->getModel(), $fieldName);
+        $colTitle = $fieldTitle ? $fieldTitle : null;
         return new Column($fieldName, $colTitle);
     }
 

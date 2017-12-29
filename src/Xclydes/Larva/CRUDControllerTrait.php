@@ -32,11 +32,6 @@ trait  CRUDControllerTrait {
 		return class_basename( (string) $this->getModelClass() );
 	}
 
-	protected function getItemsForPage( $page = null ) {
-	    $cls = $this->getModelClass();
-	    return $cls::all();
-    }
-
     /**
      * @param string|integer $id
      * @return IFormEloquent|object
@@ -129,10 +124,10 @@ trait  CRUDControllerTrait {
 		//Get the form data
 		$form = $this->createForm( $instance );
 		//Get all the entries
-		$items = $this->getItemsForPage();
+		$grid = $this->createGrid( $instance );
 		// load the view and pass the nerds
 		return $this->getIndexView()
-		    ->with(compact('cls', 'routePrefix', 'items', 'instance', 'form') );
+		    ->with(compact('cls', 'routePrefix', 'grid', 'instance', 'form') );
 	}
 	
 	/**
