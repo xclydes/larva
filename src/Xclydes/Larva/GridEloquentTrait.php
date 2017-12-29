@@ -1,14 +1,11 @@
 <?php
 namespace Xclydes\Larva;
 
-use Xclydes\Larva\Contracts\IFormEloquent;
-use Xclydes\Larva\Metadata\ForeignKey;
-use Xclydes\Larva\Metadata\TableColumn;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Xclydes\Larva\Metadata\TableData;
+use Xclydes\Larva\Contracts\IFormEloquent;
+use Xclydes\Larva\Metadata\TableColumn;
 
-trait FormEloquentTrait {
+trait GridEloquentTrait {
 
     private static $tableModels = [];
 
