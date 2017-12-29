@@ -10,20 +10,6 @@ trait GridEloquentTrait {
     private static $tableModels = [];
 
     /**
-     * @return string[]
-     */
-    protected function getProtectedFields() {
-        return [
-            Model::CREATED_AT,
-            Model::UPDATED_AT,
-            IFormEloquent::FIELD_DELETED_AT,
-            IFormEloquent::FIELD_CREATED_BY,
-            IFormEloquent::FIELD_UPDATED_BY,
-            IFormEloquent::FIELD_DELETED_BY,
-        ];
-    }
-
-    /**
      * Gets the preferred value formatter for the column
      * specified.
      * @param TableColumn $fieldData The data for the field
@@ -43,20 +29,6 @@ trait GridEloquentTrait {
      */
     function getGridColumn( $fieldData ){
         return null;
-    }
-
-    /**
-     * Indicates whether or not the field specified
-     * should be added as field within the form.
-     * @param TableColumn $fieldData Details of the column
-     * in question.
-     * @return boolean
-     */
-    public function isDisplayedInGrid( $fieldData ){
-        $fieldName = $fieldData->name;
-        //Assume the form is to be displayed
-        return !$this->isGuarded( $fieldName )
-            && !in_array($fieldName, $this->getProtectedFields());
     }
 
     /**
