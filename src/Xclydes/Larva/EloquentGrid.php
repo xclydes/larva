@@ -8,6 +8,7 @@
 
 namespace Xclydes\Larva;
 
+use Illuminate\Support\Facades\Lang;
 use ViewComponents\Eloquent\EloquentDataProvider;
 use ViewComponents\Grids\Component\Column;
 use ViewComponents\Grids\Grid;
@@ -112,9 +113,12 @@ class EloquentGrid extends Grid
     protected function createGridColumn( $fieldData ) {
         //Get the field
         $fieldName = $fieldData->name;
-        //Get the name
-        $fieldTitle = LarvaHelper::resolveForDisplay($this->getModel(), $fieldName);
-        $colTitle = $fieldTitle ? $fieldTitle : null;
+        //Determine the translation key to be be used
+        $transKeyBase = LarvaHelper::resolveBundle( $this->getModel() ) . '.' . strtolower( $fieldName );
+        $colTitle = null;
+        if( Lang::has( $transKeyBase ) ) {
+            $colTitle = trans($transKeyBase );
+        }
         return new Column($fieldName, $colTitle);
     }
 
