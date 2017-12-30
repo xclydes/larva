@@ -71,8 +71,10 @@ class EloquentGrid extends Grid
                         return $btns;
 
                     };
+                    $transKey = "{$clsShortName}.actions";
+                    $colTitle = Lang::has( $transKey ) ? trans( $transKey ) : 'Actions';
                     //Create the column
-                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions', trans("{$clsShortName}.actions"));
+                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions', $colTitle);
                     $actionsCol->setValueFormatter( $actionsClosure );
                     //Add this to the extra components list
                     array_push($this->extraComponents, $actionsCol);
