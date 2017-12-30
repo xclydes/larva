@@ -72,6 +72,7 @@ class EloquentGrid extends Grid
                     //Skip it
                     continue;
                 }
+                $colComps = $inst->getGridColumnComponents( $fieldData );
             } else {
                 //Add the column components
                 $colComps = self::getGridColumnComponents( $inst, $fieldData );
