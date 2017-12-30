@@ -71,7 +71,7 @@ class EloquentGrid extends Grid
 
                     };
                     //Create the column
-                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions');
+                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions', trams("{$clsShortName}.actions"));
                     $actionsCol->setValueFormatter( $actionsClosure );
                     //Add this to the extra components list
                     array_push($this->extraComponents, $actionsCol);
