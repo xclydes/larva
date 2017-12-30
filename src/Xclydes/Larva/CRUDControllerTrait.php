@@ -104,9 +104,9 @@ trait  CRUDControllerTrait {
 		return $frm;
 	}
 
-	protected function createGrid( $instance ) {
+	protected function createGrid( $instance , $options = []) {
 	    //Instantiate the grid
-        return new EloquentGrid( $instance );
+        return new EloquentGrid( $instance, $options );
     }
 
 	/*-- User Operations --*/

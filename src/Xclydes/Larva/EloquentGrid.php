@@ -20,15 +20,47 @@ use Xclydes\Larva\Metadata\TableData;
 class EloquentGrid extends Grid
 {
 
+    const OPTS_COMPONENTS = 'extra_components';
+    const OPTS_ACTIONS = 'actions';
+    const OPTS_FORMATTERS = 'column_formatters';
+
     private $instance;
     private $tblData;
+    private $extraComponents;
+    private $formatters;
 
-    public function __construct( $inst )
+    public function __construct( $inst, $options = [] )
     {
         //Set the instance
         $this->instance = $inst;
+        $this->extraComponents = array_get($options, self::OPTS_COMPONENTS, []);
+        //Generate the actions
+        $this->generateActions( array_get($options, self::OPTS_ACTIONS, false) );
+        $this->formatters = array_get($options, self::OPTS_FORMATTERS, []);
         //Pass on to the parent
         parent::__construct($this->createDataProvider(), $this->createComponents());
+    }
+
+    protected function generateActions( $actions ) {
+        if( is_array( $actions ) ) {
+            //Determine the key field
+            $keyField = '';
+            $clsShortName = LarvaHelper::resolveBundle( $this->getModel() );
+            $actionsClosure = function($val, $elem) use($keyField, $actions) {
+                $btns = '';
+                //If the edit option url is set
+                if( isset( $actions['edit'] ) ) {
+                    $btns .= '<a href="' . url($actions['edit'] . $elem->id) . '" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>';
+                }
+                return $btns;
+
+            };
+            //Create the column
+            $actionsCol = new Column($clsShortName . '_' . time() . '_actions');
+            $actionsCol->setValueFormatter( $actionsClosure );
+            //Add this to the extra components list
+            array_push($this->extraComponents, $actionsCol);
+        }
     }
 
     protected function createDataProvider() {
@@ -82,6 +114,17 @@ class EloquentGrid extends Grid
                 //Add the instance components
                 $components = array_merge($components, $colComps);
             }
+            //If a custom formatter is set
+            $customFormatter = array_get($this->formatters, $fieldData->name, null);
+            if( $customFormatter instanceof \Closure ) {
+                //Set it on each column
+                foreach($colComps as $col) {
+                    if( $col instanceof Column ) {
+                        //Set the formatter
+                        $col->setValueFormatter( $customFormatter );
+                    }
+                }
+            }
         }
         //If the model is a grid eloquent
         if( $gridSupport ) {
@@ -92,6 +135,11 @@ class EloquentGrid extends Grid
                 //Add them to return
                 $components = array_merge($components, $xtraComps);
             }
+        }
+        //Add the extra components
+        if( is_array( $this->extraComponents ) ) {
+            //Add them to return
+            $components = array_merge($components, $this->extraComponents);
         }
         return $components;
     }
