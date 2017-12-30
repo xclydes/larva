@@ -57,6 +57,10 @@ class TableColumn
      */
     public $isTime;
     /**
+     * @var $isPrimary boolean
+     */
+    public $isPrimary;
+    /**
      * @var $foreignKeys ForeignKey[]
      */
     public $foreignKeys = [];

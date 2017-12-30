@@ -216,14 +216,18 @@ class TableData
 
     /**
      * Generate column data for the table supplied
-     * @param $table Doctrine\DBAL\Schema\Table The table
+     * @param $table \Doctrine\DBAL\Schema\Table The table
      * to be checked.
      * @return TableColumn[] The column data collected.
+     * @throws \Doctrine\DBAL\DBALException
      */
     private static function processColumns($table ) {
         $columns = array();
         $tblCols = $table->getColumns();
+        //Get the primary key column
+        $pKeyCols = $table->getPrimaryKeyColumns();
         //Get the columns
+        /** @var  $column */
         foreach($tblCols as $column) {
             //var_dump( $column );
             //Create a new table column
@@ -250,6 +254,9 @@ class TableData
             $tblCol->isDate = $colType instanceof DateTimeType
                 || $colType instanceof TimeType
                 || $colType instanceof DateType;
+            //Is it a primary key
+            $tblCol->isPrimary = is_array( $pKeyCols )
+                && in_array($column->getName(), $pKeyCols);
             //Store for reference
             $columns[ $tblCol->name ] = $tblCol;
         }

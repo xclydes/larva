@@ -34,33 +34,60 @@ class EloquentGrid extends Grid
         //Set the instance
         $this->instance = $inst;
         $this->extraComponents = array_get($options, self::OPTS_COMPONENTS, []);
+        $this->formatters = array_get($options, self::OPTS_FORMATTERS, []);
         //Generate the actions
         $this->generateActions( array_get($options, self::OPTS_ACTIONS, false) );
-        $this->formatters = array_get($options, self::OPTS_FORMATTERS, []);
         //Pass on to the parent
         parent::__construct($this->createDataProvider(), $this->createComponents());
     }
 
     protected function generateActions( $actions ) {
         if( is_array( $actions ) ) {
-            //Determine the key field
-            $keyField = '';
-            $clsShortName = LarvaHelper::resolveBundle( $this->getModel() );
-            $actionsClosure = function($val, $elem) use($keyField, $actions) {
-                $btns = '';
-                //If the edit option url is set
-                if( isset( $actions['edit'] ) ) {
-                    $btns .= '<a href="' . url($actions['edit'] . $elem->id) . '" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>';
+            //Get the table data
+            $tblData = $this->getTableData();
+            if( $tblData ) {
+                //Determine the key field
+                $keyField = '';
+                //Get the first primary key
+                foreach($tblData->_getColumns() as $col) {
+                    if( $col->isPrimary ) {
+                        //Use this as the key field
+                        $keyField = $col->name;
+                        break;
+                    }
                 }
-                return $btns;
+                //If a key field exists
+                if( $keyField ) {
+                    $clsShortName = LarvaHelper::resolveBundle( $this->getModel() );
+                    $actionsClosure = function($val, $elem) use($keyField, $actions) {
+                        $btns = '';
+                        //If the edit option url is set
+                        if( isset( $actions['edit'] ) ) {
+                            //Format the input string
+                            $formttedStr = sprintf ($actions['edit'] , $elem->{$keyField});
+                            $btns .= '<a href="' . url( $formttedStr) . '" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>';
+                        }
+                        return $btns;
 
-            };
-            //Create the column
-            $actionsCol = new Column($clsShortName . '_' . time() . '_actions');
-            $actionsCol->setValueFormatter( $actionsClosure );
-            //Add this to the extra components list
-            array_push($this->extraComponents, $actionsCol);
+                    };
+                    //Create the column
+                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions');
+                    $actionsCol->setValueFormatter( $actionsClosure );
+                    //Add this to the extra components list
+                    array_push($this->extraComponents, $actionsCol);
+                }
+            }
         }
+    }
+
+    protected function getTableData() {
+        if( !$this->tblData ) {
+            //Get the table name
+            $tblName = $this->getModel()->getTable();
+            //Analyse the table
+            $this->tblData = TableData::analyzeTable( $tblName );
+        }
+        return $this->tblData;
     }
 
     protected function createDataProvider() {
@@ -82,10 +109,8 @@ class EloquentGrid extends Grid
         $components = [];
         //Use the model instance
         $inst = $this->getModel();
-        //Get the table name
-        $tblName = $inst->getTable();
         //Analyse the table
-        $this->tblData = TableData::analyzeTable( $tblName );
+        $this->tblData = $this->getTableData();
         //Get the columns
         $tblColumns = $this->tblData->getColumns();
         //Does the model support the advanced features?
