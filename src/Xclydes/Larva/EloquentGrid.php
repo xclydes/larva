@@ -46,18 +46,13 @@ class EloquentGrid extends Grid
             //Get the table data
             $tblData = $this->getTableData();
             if( $tblData ) {
-                //Determine the key field
-                $keyField = '';
                 //Get the first primary key
-                foreach($tblData->_getColumns() as $col) {
-                    if( $col->isPrimary ) {
-                        //Use this as the key field
-                        $keyField = $col->name;
-                        break;
-                    }
-                }
+                $firstPKey = $tblData->getKeys()->first();
                 //If a key field exists
-                if( $keyField ) {
+                /** @var TableColumn $firstPKey */
+                if( $firstPKey ) {
+                    //Determine the key field
+                    $keyField = $firstPKey->name;
                     $clsShortName = LarvaHelper::resolveBundle( $this->getModel() );
                     $actionsClosure = function($val, $elem) use($keyField, $actions) {
                         $btns = '';
@@ -65,13 +60,19 @@ class EloquentGrid extends Grid
                         if( isset( $actions['edit'] ) ) {
                             //Format the input string
                             $formttedStr = sprintf ($actions['edit'] , $elem->{$keyField});
-                            $btns .= '<a href="' . url( $formttedStr) . '" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>';
+                            $btns .= '<a href="' . url( $formttedStr ) . '" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>';
+                        }
+                        //If the edit option url is set
+                        if( isset( $actions['delete'] ) ) {
+                            //Format the input string
+                            $formttedStr = sprintf ($actions['delete'] , $elem->{$keyField});
+                            $btns .= '&nbsp;<a href="' . url( $formttedStr ) . '" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>';
                         }
                         return $btns;
 
                     };
                     //Create the column
-                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions', trams("{$clsShortName}.actions"));
+                    $actionsCol = new Column($clsShortName . '_' . time() . '_actions', trans("{$clsShortName}.actions"));
                     $actionsCol->setValueFormatter( $actionsClosure );
                     //Add this to the extra components list
                     array_push($this->extraComponents, $actionsCol);

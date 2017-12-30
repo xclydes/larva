@@ -31,6 +31,10 @@ class TableData
      * @var $columns TableColumn[]
      */
     private $columns;
+    /**
+     * @var $keys TableColumn[]
+     */
+    private $keys;
 
     /**
      * @return TableColumn[]
@@ -46,6 +50,24 @@ class TableData
      */
     public function getColumns() {
         return collect( $this->_getColumns() );
+    }
+
+    /**
+     * @return TableColumn[]
+     */
+    public function _getKeys()
+    {
+        return $this->keys;
+    }
+
+    /**
+     * Gets the key columns wrapped in a
+     * collection.
+     * @return \Illuminate\Support\Collection
+     */
+    public function getKeys()
+    {
+        return  collect( $this->keys );
     }
 
     /**
