@@ -14,7 +14,7 @@ trait FormEloquentTrait {
     /**
      * @return string[]
      */
-    protected function getProtectedFields() {
+    protected function getFormProtectedFields() {
         $protFields = [
             Model::CREATED_AT,
             Model::UPDATED_AT,
@@ -23,11 +23,6 @@ trait FormEloquentTrait {
             IFormEloquent::FIELD_UPDATED_BY,
             IFormEloquent::FIELD_DELETED_BY,
         ];
-        //If there are hidden fields
-        if( property_exists($this, 'hidden')
-            && is_array( $this->hidden ) ) {
-            $protFields = array_merge( $protFields, $this->hidden);
-        }
         return $protFields;
     }
 
@@ -40,9 +35,14 @@ trait FormEloquentTrait {
      */
     public function isDisplayedInForm( $fieldData ){
         $fieldName = $fieldData->name;
+        $isProtected = false;
+        if( method_exists($this, 'getFormProtectedFields')
+            && is_array( $this->getFormProtectedFields() ) ) {
+            $isProtected = in_array($fieldName, $this->getFormProtectedFields());
+        }
         //Assume the form is to be displayed
         return !$this->isGuarded( $fieldName )
-            && !in_array($fieldName, $this->getProtectedFields());
+            && !$isProtected;
     }
 
     /**

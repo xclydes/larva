@@ -1,8 +1,6 @@
 <?php
 namespace Xclydes\Larva;
 
-use Doctrine\DBAL\Schema\Table;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
 use ViewComponents\Grids\Component\ColumnSortingControl;
 use ViewComponents\ViewComponents\Base\ComponentInterface;
@@ -10,10 +8,26 @@ use ViewComponents\ViewComponents\Component\Control\PageSizeSelectControl;
 use ViewComponents\ViewComponents\Component\Control\PaginationControl;
 use ViewComponents\ViewComponents\Input\InputOption;
 use ViewComponents\ViewComponents\Input\InputSource;
-use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\Metadata\TableColumn;
 
 trait GridEloquentTrait {
+
+    protected function getGridProtectedFields() {
+        $protFields = [
+            Model::CREATED_AT,
+            Model::UPDATED_AT,
+            IFormEloquent::FIELD_DELETED_AT,
+            IFormEloquent::FIELD_CREATED_BY,
+            IFormEloquent::FIELD_UPDATED_BY,
+            IFormEloquent::FIELD_DELETED_BY,
+        ];
+        //If there are hidden fields
+        if( property_exists($this, 'hidden')
+            && is_array( $this->hidden ) ) {
+            $protFields = array_merge( $protFields, $this->hidden);
+        }
+        return $protFields;
+    }
 
     /**
      * Gets the preferred value formatter for the column
@@ -56,8 +70,8 @@ trait GridEloquentTrait {
     public function isDisplayedInGrid( $fieldData ) {
         $fieldName = $fieldData->name;
         $isProtected = false;
-        if( method_exists($this, 'getProtectedFields') ) {
-            $isProtected = in_array($fieldName, $this->getProtectedFields());
+        if( method_exists($this, 'getGridProtectedFields') ) {
+            $isProtected = in_array($fieldName, $this->getGridProtectedFields());
         }
         //Assume the form is to be displayed
         return !$this->isGuarded( $fieldName )
