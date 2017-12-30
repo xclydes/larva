@@ -187,6 +187,15 @@ class TableData
             $tblData->name = $table->getName();
             //Process the columns
             $columns = self::processColumns( $table );
+            $pKeyCols = [];
+            //Gather the primary keys
+            foreach($columns as $column){
+                if( $column->isPrimary ) {
+                    array_push($pKeyCols, $column);
+                }
+            }
+            //Set these on the table
+            $tblData->keys = $pKeyCols;
             //Process the foreign keys
             $fKeys = self::processForeignKeys( $table );
             logger()->debug('FKeys ' . $tblName, $fKeys);
