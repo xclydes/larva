@@ -53,7 +53,8 @@ return [
             'new' => false
         ],
         'row' => [
-            'empty' => '<Empty>'
+            'empty' => '<Empty>',
+            'count' => 10
         ]
     ],
     'kris' => [

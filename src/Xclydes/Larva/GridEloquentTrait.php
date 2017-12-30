@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use ViewComponents\Grids\Component\ColumnSortingControl;
 use ViewComponents\ViewComponents\Base\ComponentInterface;
 use ViewComponents\ViewComponents\Input\InputOption;
+use ViewComponents\ViewComponents\Input\InputSource;
 use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\Metadata\TableColumn;
 
@@ -76,7 +77,18 @@ trait GridEloquentTrait {
      */
     public function getExtraGridComponents() {
         //TODO Add an actions column
-        return [];
+        $extComps = [];
+        $inputs = new InputSource( Input::all() );
+        array_push($extComps,
+            new PaginationControl($inputs->option('page', 1), 1)
+        );
+        array_push($extComps,
+            new PageSizeSelectControl(
+                $inputs->option('page_size', xclydes_larva_config('list.row.count')),
+                [5, 10, 20, 50, 100]
+            )
+        );
+        return $extComps;
     }
 
     /**
