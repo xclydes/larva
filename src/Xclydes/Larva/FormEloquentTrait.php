@@ -56,7 +56,7 @@ trait FormEloquentTrait {
         $fieldName = $fieldData->name;
         $inc = false;
         $isFillable = empty( $this->fillable ) || in_array($fieldName, $this->fillable);
-        $isInternalField = in_array($fieldName, $this->getProtectedFields());
+        $isInternalField = in_array($fieldName, $this->getFormProtectedFields());
         $inc = $fieldName && !$this->isGuarded( $fieldName ) && $isFillable && !$isInternalField;
         return $inc;
     }
