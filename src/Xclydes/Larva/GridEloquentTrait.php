@@ -1,6 +1,7 @@
 <?php
 namespace Xclydes\Larva;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
 use ViewComponents\Grids\Component\ColumnSortingControl;
 use ViewComponents\ViewComponents\Base\ComponentInterface;
@@ -8,19 +9,20 @@ use ViewComponents\ViewComponents\Component\Control\PageSizeSelectControl;
 use ViewComponents\ViewComponents\Component\Control\PaginationControl;
 use ViewComponents\ViewComponents\Input\InputOption;
 use ViewComponents\ViewComponents\Input\InputSource;
+use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\Metadata\TableColumn;
 
 trait GridEloquentTrait {
 
     protected function getGridProtectedFields() {
-        $protFields = [
+        $protFields = array(
             Model::CREATED_AT,
             Model::UPDATED_AT,
             IFormEloquent::FIELD_DELETED_AT,
             IFormEloquent::FIELD_CREATED_BY,
             IFormEloquent::FIELD_UPDATED_BY,
             IFormEloquent::FIELD_DELETED_BY,
-        ];
+        );
         //If there are hidden fields
         if( property_exists($this, 'hidden')
             && is_array( $this->hidden ) ) {
