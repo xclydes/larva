@@ -113,7 +113,7 @@ class EloquentGrid extends Grid
         }
         $column = new Column($fieldName, $colTitle);
         //Generate a value formatter based on the type
-        $valueFormatter = self::createValueFormatter( $model, fieldData );
+        $valueFormatter = self::createValueFormatter( $model, $fieldData );
         if( $valueFormatter instanceof \Closure ) {
             $column->setValueFormatter( $valueFormatter );
         }
@@ -124,6 +124,7 @@ class EloquentGrid extends Grid
     }
 
     /**
+     * @param IGridEloquent|Eloquent $model
      * @param TableColumn $fieldData
      * @return null|\Closure
      */
