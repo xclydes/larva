@@ -43,7 +43,7 @@ class EloquentGrid extends Grid
                 $opts = array_merge($provOpts, $opts);
             }
         }
-        return new EloquentDataProvider(get_class( $inst), $opts);
+        return new EloquentDataProvider(get_class( $inst ), $opts);
     }
 
     protected function createComponents() {

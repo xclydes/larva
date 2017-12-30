@@ -15,7 +15,7 @@ trait FormEloquentTrait {
      * @return string[]
      */
     protected function getProtectedFields() {
-        return [
+        $protFields = [
             Model::CREATED_AT,
             Model::UPDATED_AT,
             IFormEloquent::FIELD_DELETED_AT,
@@ -23,6 +23,12 @@ trait FormEloquentTrait {
             IFormEloquent::FIELD_UPDATED_BY,
             IFormEloquent::FIELD_DELETED_BY,
         ];
+        //If there are hidden fields
+        if( property_exists($this, 'hidden')
+            && is_array( $this->hidden ) ) {
+            $protFields = array_merge( $protFields, $this->hidden);
+        }
+        return $protFields;
     }
 
     /**
