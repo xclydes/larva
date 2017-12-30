@@ -3,6 +3,7 @@ namespace Xclydes\Larva\Helpers;
 
 use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\EloquentForm;
+use Xclydes\Larva\Metadata\TableData;
 
 class LarvaHelper {
 
