@@ -23,6 +23,13 @@ interface IGridEloquent
     function isDisplayedInGrid($fieldData);
 
     /**
+     * @param TableColumn $fieldData TableColumn Details of the column
+     * in question.
+     * @return bool
+     */
+    function isSortedInGrid($fieldData );
+
+    /**
      * Gets the preferred value formatter for the column
      * specified.
      * @param TableColumn $fieldData The data for the field
@@ -38,14 +45,14 @@ interface IGridEloquent
      * in question.
      * @return Column The column instance to be rendered.
      */
-    function getGridColumn( $fieldData );
+    function getGridColumnComponents( $fieldData );
 
     /**
      * Gets the grid components to be added, if any.
      * @return mixed The array of components to be
      * added.
      */
-    function getGridComponents();
+    function getExtraGridComponents();
 
     /**
      * @return mixed

@@ -1,7 +1,12 @@
 <?php
 namespace Xclydes\Larva;
 
+use Doctrine\DBAL\Schema\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Input;
+use ViewComponents\Grids\Component\ColumnSortingControl;
+use ViewComponents\ViewComponents\Base\ComponentInterface;
+use ViewComponents\ViewComponents\Input\InputOption;
 use Xclydes\Larva\Contracts\IFormEloquent;
 use Xclydes\Larva\Metadata\TableColumn;
 
@@ -23,10 +28,19 @@ trait GridEloquentTrait {
      * customize the column being used for the grid.
      * @param TableColumn $fieldData TableColumn Details of the column
      * in question.
-     * @return Column The column instance to be rendered.
+     * @return ComponentInterface[] The array of components to be added.
      */
-    public function getGridColumn( $fieldData ) {
-        return null;
+    public function getGridColumnComponents( $fieldData ) {
+        //Get the default components
+        $defComps = EloquentGrid::getGridColumnComponents($this, $fieldData);
+        //If this is sortable
+        if( $this->isSortedInGrid( $fieldData ) ) {
+            $inputOption = new InputOption('sort', Input::all(), null);
+            $sortControl = new ColumnSortingControl('name', $inputOption);
+            //Add a sort component
+            array_push($defComps, $sortControl);
+        }
+        return $defComps;
     }
 
     /**
@@ -48,18 +62,27 @@ trait GridEloquentTrait {
     }
 
     /**
+     * @param TableColumn $fieldData
+     * @return bool
+     */
+    public function isSortedInGrid( $fieldData ){
+        return true;
+    }
+
+    /**
      * Gets the grid components to be added, if any.
-     * @return mixed The array of components to be
+     * @return ComponentInterface[] The array of components to be
      * added.
      */
-    public function getGridComponents() {
-        return null;
+    public function getExtraGridComponents() {
+        //TODO Add an actions column
+        return [];
     }
 
     /**
      * @return mixed
      */
     public function getGridProviderOptions() {
-        return null;
+        return [];
     }
 }

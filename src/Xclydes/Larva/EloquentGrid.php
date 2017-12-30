@@ -61,9 +61,8 @@ class EloquentGrid extends Grid
         //Process the field names
         /** @var $fieldData TableColumn */
         foreach( $tblColumns as $fieldData ) {
-            //Assume the type is to be resolved
-            $gridColumn = null;
-            $gridValueFormatter = null;
+            //Create a list of column components
+            $colComps = [];
             //If the model is a grid eloquent
             if( $gridSupport ) {
                 //Update the table data
@@ -73,30 +72,20 @@ class EloquentGrid extends Grid
                     //Skip it
                     continue;
                 }
-                //Get the column instance to be rendered
-                $gridColumn = $inst->getGridColumn( $fieldData );
-                //Get the value formatter to use
-                $gridValueFormatter = $inst->getGridValueFormatter( $fieldData );
             } else {
-                //Get the value formatter to use
-                $gridValueFormatter = $this->createValueFormatter(  $fieldData );
+                //Add the column components
+                $colComps = self::getGridColumnComponents( $inst, $fieldData );
             }
-            //If the column is not valid
-            if( !$gridColumn ) {
-                $gridColumn = $this->createGridColumn( $fieldData );
+            //Get the components to be added
+            if( is_array( $colComps ) ) {
+                //Add the instance components
+                $components = array_merge($components, $colComps);
             }
-            //If a formatter is set
-            if( $gridValueFormatter ) {
-                //Set the value formatter on the column
-                $gridColumn->setValueFormatter( $gridValueFormatter );
-            }
-            //Add this component
-            array_push($components, $gridColumn);
         }
         //If the model is a grid eloquent
         if( $gridSupport ) {
             //Get the components to be added
-            $xtraComps = $inst->getGridComponents();
+            $xtraComps = $inst->getExtraGridComponents();
             //If it is an array
             if( is_array( $xtraComps ) ) {
                 //Add them to return
@@ -110,23 +99,54 @@ class EloquentGrid extends Grid
         return $this->instance;
     }
 
-    protected function createGridColumn( $fieldData ) {
+    public static function getGridColumnComponents( $model, $fieldData ) {
+        $components = [];
         //Get the field
         $fieldName = $fieldData->name;
+        $langBundle = LarvaHelper::resolveBundle( $model );
         //Determine the translation key to be be used
-        $transKeyBase = LarvaHelper::resolveBundle( $this->getModel() ) . '.' . strtolower( $fieldName );
+        $transKeyBase =  $langBundle . '.' . strtolower( $fieldName );
         $colTitle = null;
         if( Lang::has( $transKeyBase ) ) {
             $colTitle = trans($transKeyBase );
         }
-        return new Column($fieldName, $colTitle);
+        $column = new Column($fieldName, $colTitle);
+        //Generate a value formatter based on the type
+        $valueFormatter = self::createValueFormatter( $fieldData );
+        if( $valueFormatter instanceof \Closure ) {
+            $column->setValueFormatter( $valueFormatter );
+        }
+        //Store the column
+        array_push($components, $column);
+
+        return $components;
     }
 
     /**
      * @param TableColumn $fieldData
      * @return null|\Closure
      */
-    protected function createValueFormatter($fieldData ) {
-        return null;
+    public static function createValueFormatter( $model, $fieldData ) {
+        $closure = null;
+        $langBundle = LarvaHelper::resolveBundle( $model );
+        if( $fieldData->isBoolean ) {
+            $closure = function( $value ) use( $langBundle ) {
+                //Return the text true or false
+                $transKey = "{$langBundle}." . ($value ? 'true' : 'false');
+                if( Lang::has( $transKey ) ) {
+                    $txt = trans( $transKey );
+                } else {
+                    $txt = $value ? 'true' : 'false';
+                }
+                return $txt;
+            };
+        } else if( $fieldData->isDate && !$fieldData->isTime  ) {
+            //This is a date only
+        } else if( $fieldData->isDate ) {
+            //This is date and time
+        } else if( $fieldData->isTime ) {
+            //This is a time only
+        }
+        return $closure;
     }
 }

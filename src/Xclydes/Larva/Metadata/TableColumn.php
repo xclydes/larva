@@ -53,6 +53,10 @@ class TableColumn
      */
     public $isDate;
     /**
+     * @var $isTime boolean
+     */
+    public $isTime;
+    /**
      * @var $foreignKeys ForeignKey[]
      */
     public $foreignKeys = [];
