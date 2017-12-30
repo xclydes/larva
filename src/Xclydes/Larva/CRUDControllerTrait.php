@@ -175,7 +175,7 @@ trait  CRUDControllerTrait {
             ->with('instance', $instance)
             ->with('form', $this->createForm( $instance ) )
             ->with('routePrefix', $this->getRoutePrefix())
-            ->with('items', $grid);
+            ->with('grid', $grid);
 	}
 
 	protected function getGridOptions() {
