@@ -36,7 +36,7 @@ trait GridEloquentTrait {
         //If this is sortable
         if( $this->isSortedInGrid( $fieldData ) ) {
             $inputOption = new InputOption('sort', Input::all(), null);
-            $sortControl = new ColumnSortingControl('name', $inputOption);
+            $sortControl = new ColumnSortingControl($fieldData->name, $inputOption);
             //Add a sort component
             array_push($defComps, $sortControl);
         }
