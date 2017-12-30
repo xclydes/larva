@@ -124,7 +124,7 @@ trait  CRUDControllerTrait {
 		//Get the form data
 		$form = $this->createForm( $instance );
 		//Get all the entries
-		$grid = $this->createGrid( $instance );
+		$grid = $this->createGrid( $instance, $this->getGridOptions() );
 		// load the view and pass the nerds
 		return $this->getIndexView()
 		    ->with(compact('cls', 'routePrefix', 'grid', 'instance', 'form') );
@@ -169,15 +169,19 @@ trait  CRUDControllerTrait {
 	protected function doAddEdit( $id ) {
 		$instance = $this->getModelInstance( $id );
         //Get all the entries
-        $items = $this->getItemsForPage();
+        $grid = $this->createGrid( $instance, $this->getGridOptions() );
         // load the view and pass the nerds
 		return $this->getAddEditView()
             ->with('instance', $instance)
             ->with('form', $this->createForm( $instance ) )
             ->with('routePrefix', $this->getRoutePrefix())
-            ->with('items', $items);
+            ->with('items', $grid);
 	}
-	
+
+	protected function getGridOptions() {
+	    return [];
+    }
+
 	/*-- Storage Manipulation --*/
 
     /**
