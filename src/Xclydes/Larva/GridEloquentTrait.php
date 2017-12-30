@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
 use ViewComponents\Grids\Component\ColumnSortingControl;
 use ViewComponents\ViewComponents\Base\ComponentInterface;
+use ViewComponents\ViewComponents\Component\Control\PageSizeSelectControl;
+use ViewComponents\ViewComponents\Component\Control\PaginationControl;
 use ViewComponents\ViewComponents\Input\InputOption;
 use ViewComponents\ViewComponents\Input\InputSource;
 use Xclydes\Larva\Contracts\IFormEloquent;
