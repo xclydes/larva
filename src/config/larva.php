@@ -55,6 +55,10 @@ return [
         'row' => [
             'empty' => '<Empty>',
             'count' => 10
+        ],
+        'page' => [
+            'size' => 10,
+            'steps' => [10, 20, 50, 100]
         ]
     ],
     'kris' => [

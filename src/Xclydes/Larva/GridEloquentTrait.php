@@ -81,13 +81,14 @@ trait GridEloquentTrait {
         //TODO Add an actions column
         $extComps = [];
         $inputs = new InputSource( Input::all() );
+        $defPageSize = xclydes_larva_config('list.page.size', 10);
         array_push($extComps,
-            new PaginationControl($inputs->option('page', 1), 1)
+            new PaginationControl($inputs->option('page', 1), $defPageSize)
         );
         array_push($extComps,
             new PageSizeSelectControl(
-                $inputs->option('page_size', xclydes_larva_config('list.row.count')),
-                [5, 10, 20, 50, 100]
+                $inputs->option('page_size', $defPageSize),
+                xclydes_larva_config('list.page.steps', [5, 10, 20, 50, 100])
             )
         );
         return $extComps;
