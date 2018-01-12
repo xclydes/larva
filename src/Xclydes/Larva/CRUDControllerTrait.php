@@ -55,7 +55,28 @@ trait  CRUDControllerTrait {
 	protected function getRoutePrefix() {
 		return strtolower( $this->getModelClassName() );
 	}
-	
+
+	protected function getInstanceRoute( $instance ) {
+        //Assume store
+        $dst = 'store';
+        //Assume POST
+        $method = 'POST';
+        //Assume no special route parameters
+        $routeParams = array();
+        //If the entry exists
+        if( $instance->exists ) {
+            //Use put
+            $method = 'PATCH';
+            //Do an update
+            $dst = 'update';
+            //With the instance ID
+            array_push($routeParams, $instance->getKey());
+        }
+        //Build the route
+        $route = route($this->getDestination( $instance, $dst ) , $routeParams);
+        return [$method, $route];
+    }
+
 	/**
 	 * Generates the dot notation for the action and 
 	 * instance specified as it would to this controller.
@@ -76,23 +97,7 @@ trait  CRUDControllerTrait {
 	 * which is to be rendered.
 	 */
 	protected function createForm( $instance ) {
-		//Assume store
-		$dst = 'store';
-		//Assume POST
-		$method = 'POST';
-		//Assume no special route parameters
-		$routeParams = array();
-		//If the entry exists
-		if( $instance->exists ) {
-			//Use put
-			$method = 'PATCH';
-			//Do an update
-			$dst = 'update';
-			//With the instance ID
-			array_push($routeParams, $instance->getKey());
-		}
-		//Build the route
-		$route = route($this->getDestination( $instance, $dst ) , $routeParams);
+	    list($method, $route) = $this->getInstanceRoute( $instance );
 		//Generate the form
 		$frm = $this->form(EloquentForm::class, [
 			'method' => $method,//Prefer POST
@@ -138,7 +143,6 @@ trait  CRUDControllerTrait {
 	{
 		return $this->doAddEdit( null );
 	}
-	
 	
 	/**
 	 * Show the form for editing the specified resource.
